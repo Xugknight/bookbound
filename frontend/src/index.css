@@ -1,0 +1,67 @@
+:root {
+  --bg: #130E17;
+  --surface: #1B1522;
+  --border: #2A2231;
+  --text: #EAE6F1;
+  --muted: #B9ADC9;
+  --accent: #A78BFA;
+  --accent-contrast: #1A1230;
+  --radius: 12px;
+  --shadow: 0 8px 30px rgba(0, 0, 0, .25);
+}
+
+html,
+body {
+  height: 100%;
+  background: var(--bg);
+  color: var(--text);
+}
+
+* {
+  box-sizing: border-box
+}
+
+a {
+  color: var(--accent)
+}
+
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 1.2rem
+}
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 1rem
+}
+
+button {
+  background: var(--accent);
+  color: var(--accent-contrast);
+  border: none;
+  border-radius: 10px;
+  padding: .55rem .9rem;
+  cursor: pointer
+}
+
+button:hover {
+  filter: brightness(1.05)
+}
+
+input,
+textarea,
+select {
+  background: #171222;
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: .55rem
+}
+
+.muted {
+  color: var(--muted)
+}
