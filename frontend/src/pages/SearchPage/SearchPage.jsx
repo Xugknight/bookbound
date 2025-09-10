@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
 import { searchOpenLibrary, coverUrl } from '../../services/olService';
+import { createBook } from '../../services/bookService';
+
 
 export default function SearchPage() {
   const [query, setQuery] = useState('');
@@ -8,6 +10,7 @@ export default function SearchPage() {
   const [numFound, setNumFound] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  const [addedKeys, setAddedKeys] = useState(new Set());
 
   async function runSearch(nextPage = 1) {
     if (!query.trim()) {
@@ -24,6 +27,20 @@ export default function SearchPage() {
       setErrorMessage(err.message);
     } finally {
       setIsLoading(false);
+    }
+  }
+
+  async function handleAdd(book) {
+    try {
+      await createBook({
+        workKey: book.workKey,
+        title: book.title,
+        authors: book.authors || [],
+        coverId: book.coverId ?? null
+      });
+      setAddedKeys(prev => new Set(prev).add(book.workKey));
+    } catch (err) {
+      setErrorMessage(err.message);
     }
   }
 
@@ -96,8 +113,14 @@ export default function SearchPage() {
                     </a>
                   </div>
                   <div>
-                    {/* Add-to-list comes later when we wire /api/books */}
-                    <button type="button" disabled title="Add coming soon">Add</button>
+                    <button
+                      type="button"
+                      onClick={() => handleAdd(book)}
+                      disabled={addedKeys.has(book.workKey)}
+                      title={addedKeys.has(book.workKey) ? 'Already in your list' : 'Add to reading list'}
+                    >
+                      {addedKeys.has(book.workKey) ? 'Added' : 'Add'}
+                    </button>
                   </div>
                 </li>
               );
