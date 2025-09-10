@@ -13,6 +13,7 @@ app.use(express.static(path.join(__dirname, '../frontend/dist')));
 app.get('/api/health', (_req, res) => res.json({ ok: true }));
 
 app.use('/api/books', require('./routes/books'));
+app.use('/api/ol', require('./routes/openLibrary'));
 
 app.get('/*splat', (_req, res) => {
   res.sendFile(path.join(__dirname, '../frontend/dist/index.html'));
