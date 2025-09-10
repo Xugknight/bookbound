@@ -1,6 +1,11 @@
 const express = require('express');
 const router = express.Router();
+const booksCtrl = require('../controllers/books');
 
-router.get('/', (_req, res) => res.json({ data: [], total: 0, page: 1, pages: 1 }));
+// GET /api/books
+router.get('/', booksCtrl.index);
+
+// POST /api/books
+router.post('/', booksCtrl.create);
 
 module.exports = router;
