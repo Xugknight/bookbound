@@ -8,12 +8,12 @@ const userSchema = new Schema(
     {
         name: { type: String, required: true },
         email: { type: String, required: true, unique: true, trim: true, lowercase: true },
-        password: { type: String, required: true }
+        password: { type: String, required: true },
     },
     {
         timestamps: true,
         toJSON: {
-            transform: function (_doc, ret) { delete ret.password; return ret; }
+            transform(_doc, ret) { delete ret.password; return ret; }
         }
     }
 );

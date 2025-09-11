@@ -1,21 +1,54 @@
-import { Routes, Route, Link } from 'react-router';
+import { useState } from 'react';
+import { Routes, Route, Link, useNavigate } from 'react-router';
+import { getUser, logOut } from '../../services/authService';
 import HomePage from '../HomePage/HomePage';
 import SearchPage from '../SearchPage/SearchPage';
 import ReadingListPage from '../ReadingListPage/ReadingListPage';
+import LogInPage from '../LogInPage/LogInPage';
+import SignUpPage from '../SignUpPage/SignUpPage';
 
 export default function App() {
+    const [user, setUser] = useState(getUser());
+    const navigate = useNavigate();
+
+    function handleLogOut() {
+        logOut();
+        setUser(null);
+        navigate('/');
+    }
+
     return (
         <div className="container">
             <nav className="card" style={{ display: 'flex', gap: '.75rem', alignItems: 'center' }}>
                 <Link to="/">Home</Link>
                 <Link to="/search">Search</Link>
                 <Link to="/list">My List</Link>
+                <span style={{ marginLeft: 'auto' }}>
+                    {user ? (
+                        <>
+                            <span className="muted small" style={{ marginRight: '.5rem' }}>Welcome, {user.name}</span>
+                            <button onClick={handleLogOut} type="button">Log Out</button>
+                        </>
+                    ) : (
+                        <>
+                            <Link to="/login">Log In</Link>
+                            <Link to="/signup">Sign Up</Link>
+                        </>
+                    )}
+                </span>
             </nav>
+
             <main style={{ marginTop: '1rem' }}>
                 <Routes>
                     <Route path="/" element={<HomePage />} />
                     <Route path="/search" element={<SearchPage />} />
                     <Route path="/list" element={<ReadingListPage />} />
+                    {!user && (
+                        <>
+                            <Route path="/login" element={<LogInPage setUser={setUser} />} />
+                            <Route path="/signup" element={<SignUpPage setUser={setUser} />} />
+                        </>
+                    )}
                 </Routes>
             </main>
         </div>

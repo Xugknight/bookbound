@@ -1,9 +1,6 @@
 const Book = require('../models/book');
 
-module.exports = {
-    index,
-    create,
-};
+module.exports = { index, create };
 
 async function index(req, res) {
     const currentPage = Math.max(1, parseInt(req.query.page, 10) || 1);
@@ -11,10 +8,8 @@ async function index(req, res) {
     const statusFilter = (req.query.status || '').trim();
     const searchQuery = (req.query.q || '').trim();
 
-    const filter = {};
-    if (statusFilter && ['to-read', 'reading', 'done'].includes(statusFilter)) {
-        filter.status = statusFilter;
-    }
+    const filter = { owner: req.user._id };
+    if (statusFilter && ['to-read', 'reading', 'done'].includes(statusFilter)) filter.status = statusFilter;
     if (searchQuery) {
         filter.$or = [
             { title: { $regex: searchQuery, $options: 'i' } },
@@ -37,16 +32,12 @@ async function index(req, res) {
 
 async function create(req, res) {
     const { workKey, title, authors = [], coverId = null } = req.body || {};
-    if (!workKey || !title) {
-        return res.status(400).json({ message: 'workKey and title are required' });
-    }
+    if (!workKey || !title) return res.status(400).json({ message: 'workKey and title are required' });
 
     try {
         const book = await Book.findOneAndUpdate(
-            { workKey },
-            {
-                $setOnInsert: { workKey, title, authors, coverId, status: 'to-read', order: Date.now() }
-            },
+            { owner: req.user._id, workKey },
+            { $setOnInsert: { owner: req.user._id, workKey, title, authors, coverId, status: 'to-read', order: Date.now() } },
             { new: true, upsert: true }
         );
         res.status(201).json(book);
