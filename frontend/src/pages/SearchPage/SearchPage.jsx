@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { searchOpenLibrary, coverUrl } from '../../services/olService';
-import { createBook } from '../../services/bookService';
+import { createBook, listBooks } from '../../services/bookService';
 
 
 export default function SearchPage() {
@@ -11,6 +11,20 @@ export default function SearchPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [addedKeys, setAddedKeys] = useState(new Set());
+
+  useEffect(() => {
+  let isCancelled = false;
+  async function loadSaved() {
+    try {
+      const { data } = await listBooks({ page: 1, limit: 500 });
+      if (!isCancelled) setAddedKeys(new Set(data.map((b) => b.workKey)));
+    } catch (_ignored) {
+      return;
+    }
+  }
+  loadSaved();
+  return () => { isCancelled = true; };
+}, []);
 
   async function runSearch(nextPage = 1) {
     if (!query.trim()) {
@@ -64,7 +78,7 @@ export default function SearchPage() {
         <form onSubmit={handleSubmit} style={{ display: 'flex', gap: '.5rem', marginTop: '.75rem' }}>
           <input
             type="search"
-            placeholder="Title, author, keywords…"
+            placeholder="Title, Author, Keywords…"
             value={query}
             onChange={(e) => { setQuery(e.target.value); }}
           />
@@ -85,7 +99,7 @@ export default function SearchPage() {
           <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'grid', gap: '.75rem' }}>
             {results.map((book) => {
               const src = coverUrl(book.coverId, 'M');
-              const authors = book.authors?.join(', ') || 'Unknown author';
+              const authors = book.authors?.join(', ') || 'Unknown Author';
               return (
                 <li key={book.workKey}
                   style={{ display: 'grid', gridTemplateColumns: '64px 1fr auto', gap: '.75rem', alignItems: 'center' }}>
@@ -117,7 +131,7 @@ export default function SearchPage() {
                       type="button"
                       onClick={() => handleAdd(book)}
                       disabled={addedKeys.has(book.workKey)}
-                      title={addedKeys.has(book.workKey) ? 'Already in your list' : 'Add to reading list'}
+                      title={addedKeys.has(book.workKey) ? 'Already in Your List' : 'Add to Reading List'}
                     >
                       {addedKeys.has(book.workKey) ? 'Added' : 'Add'}
                     </button>
