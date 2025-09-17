@@ -7,5 +7,6 @@ router.use(ensureLoggedIn);
 
 router.get('/', booksCtrl.index);
 router.post('/', booksCtrl.create);
+router.delete('/:id', booksCtrl.delete);
 
 module.exports = router;

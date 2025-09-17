@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { useEffect, useState } from 'react';
 import { searchOpenLibrary, coverUrl } from '../../services/olService';
 import { createBook, listBooks } from '../../services/bookService';

@@ -1,6 +1,10 @@
 const Book = require('../models/book');
 
-module.exports = { index, create };
+module.exports = { 
+    index, 
+    create,
+    delete: remove,
+};
 
 async function index(req, res) {
     const currentPage = Math.max(1, parseInt(req.query.page, 10) || 1);
@@ -43,5 +47,15 @@ async function create(req, res) {
         res.status(201).json(book);
     } catch (err) {
         res.status(400).json({ message: err.message || 'Failed to Add Book' });
+    }
+}
+
+async function remove(req, res) {
+    try {
+        const deleted = await Book.findOneAndDelete({ _id: req.params.id, owner: req.user._id });
+        if (!deleted) return res.status(404).json({ message: 'Not Found' });
+        res.json({ ok: true });
+    } catch (err) {
+        res.status(400).json({ message: err.message || 'Delete Failed' });
     }
 }
