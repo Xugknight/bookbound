@@ -40,6 +40,17 @@ export async function removeBook(id) {
   return payload;
 }
 
+export async function updateBookStatus(id, status) {
+  const res = await fetch(`/api/books/${id}/status`, {
+    method: 'PATCH',
+    headers: withAuth({ 'Content-Type': 'application/json' }),
+    body: JSON.stringify({ status })
+  });
+  const payload = await safeJson(res);
+  if (!res.ok) throw new Error(payload?.message || `Update Failed (${res.status})`);
+  return payload;
+};
+
 async function safeJson(res) {
   try { return await res.json(); } catch { return null; }
 }

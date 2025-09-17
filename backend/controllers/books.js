@@ -4,6 +4,7 @@ module.exports = {
     index, 
     create,
     delete: remove,
+    update: updateStatus,
 };
 
 async function index(req, res) {
@@ -59,3 +60,23 @@ async function remove(req, res) {
         res.status(400).json({ message: err.message || 'Delete Failed' });
     }
 }
+
+async function updateStatus(req, res) {
+    try {
+        const { status } = req.body || {};
+        const allowed = ['to-read', 'reading', 'done'];
+        if (!allowed.includes(status)) {
+            return res.status(400).json({ message: 'Invalid Status' });
+        }
+        
+        const updated = await Book.findOneAndUpdate(
+            { _id: req.params.id, owner: req.user._id },
+            { $set: { status } },
+            { new: true }
+        );
+        if (!updated) return res.status(404).json({ message: 'Not Found' });
+        res.json(updated);
+    } catch (err) {
+        res.status(400).json({ message: err.message || 'Update Failed' });
+    }
+};
