@@ -2,15 +2,25 @@ import { useEffect, useState, useCallback } from 'react';
 import { listBooks, removeBook, updateBookStatus } from '../../services/bookService';
 import { coverUrl } from '../../services/olService';
 
+const VALID_STATUSES = ['to-read', 'reading', 'done'];
+
 export default function ReadingListPage() {
   const [books, setBooks] = useState([]);
   const [totalPages, setTotalPages] = useState(1);
   const [totalCount, setTotalCount] = useState(0);
-  const [page, setPage] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
-  const [statusFilter, setStatusFilter] = useState('');
   const [confirmingDeleteId, setConfirmingDeleteId] = useState(null);
+  const [page, setPage] = useState(() => {
+    const params = new URLSearchParams(window.location.search);
+    const fromUrl = parseInt(params.get('page') || '1', 10);
+    return Number.isFinite(fromUrl) && fromUrl > 1 ? fromUrl : 1;
+  });
+  const [statusFilter, setStatusFilter] = useState(() => {
+    const params = new URLSearchParams(window.location.search);
+    const s = (params.get('status') || '').trim();
+    return VALID_STATUSES.includes(s) ? s : '';
+  });
 
   const load = useCallback(async () => {
     setIsLoading(true);
@@ -28,6 +38,24 @@ export default function ReadingListPage() {
   }, [page, statusFilter]);
 
   useEffect(() => { load(); }, [load]);
+
+  useEffect(() => {
+    if (confirmingDeleteId && !books.some(b => b._id === confirmingDeleteId)) {
+      setConfirmingDeleteId(null);
+    }
+  }, [books, confirmingDeleteId]);
+
+  useEffect(() => {
+    const params = new URLSearchParams();
+    if (page > 1) params.set('page', String(page));
+    if (statusFilter) params.set('status', statusFilter);
+
+    const newUrl = params.toString()
+      ? `?${params.toString()}`
+      : window.location.pathname;
+
+    window.history.replaceState(null, '', newUrl);
+  }, [page, statusFilter]);
 
   function requestRemove(bookId) {
     setConfirmingDeleteId(bookId);
@@ -56,8 +84,8 @@ export default function ReadingListPage() {
     const wasLastOnPage = books.length === 1 && page > 1;
     try {
       await removeBook(id);
-      setBooks((prev) => prev.filter(b => b._id !== id));
-      setTotalCount((n) => Math.max(0, n - 1));
+      setBooks(prev => prev.filter(b => b._id !== id));
+      setTotalCount(n => Math.max(0, n - 1));
       if (wasLastOnPage) setPage(p => Math.max(1, p - 1));
       return true;
     } catch (e) {
@@ -70,6 +98,10 @@ export default function ReadingListPage() {
     if (e.key === 'Enter') { e.preventDefault(); confirmRemove(id); }
     if (e.key === 'Escape') { e.preventDefault(); cancelRemove(); }
   };
+
+  function onConfirmBlur(e) {
+    if (!e.currentTarget.contains(e.relatedTarget)) cancelRemove();
+  }
 
   return (
     <section className="stack">
@@ -94,7 +126,11 @@ export default function ReadingListPage() {
         </div>
       </div>
 
-      {errorMessage && <div className="card" style={{ color: '#f87171' }}>{errorMessage}</div>}
+      {errorMessage && (
+        <div className="card" style={{ color: '#f87171' }} role="status" aria-live="polite">
+          {errorMessage}
+        </div>
+      )}
       {isLoading && <div className="card">Loading…</div>}
       {!isLoading && books.length === 0 && <div className="card">No Books Yet. Add From Search.</div>}
 
@@ -127,7 +163,13 @@ export default function ReadingListPage() {
             </select>
 
             {confirmingDeleteId === book._id ? (
-              <div className="inline-confirm" role="group" aria-label="Confirm removal" onKeyDown={(e) => onConfirmKeyDown(e, book._id)}>
+              <div
+                className="inline-confirm"
+                role="group"
+                aria-label="Confirm removal"
+                onKeyDown={(e) => onConfirmKeyDown(e, book._id)}
+                onBlur={onConfirmBlur}
+              >
                 <span className="muted small">Remove?</span>
                 <button
                   className="danger"
