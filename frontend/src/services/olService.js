@@ -13,7 +13,6 @@ async function safeJson(res) {
     try { return await res.json(); } catch { return null; }
 }
 
-// helper to build cover images (S|M|L); returns null if none
 export function coverUrl(coverId, size = 'M') {
     return coverId ? `https://covers.openlibrary.org/b/id/${coverId}-${size}.jpg` : null;
 }

@@ -65,3 +65,13 @@ select {
 .muted {
   color: var(--muted)
 }
+
+.inline-confirm {
+  display: inline-flex;
+  gap: .5rem;
+  align-items: center;
+}
+
+.inline-confirm .danger {
+  padding: 0.4rem 0.6rem;
+}

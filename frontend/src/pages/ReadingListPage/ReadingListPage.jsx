@@ -10,6 +10,7 @@ export default function ReadingListPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
+  const [confirmingDeleteId, setConfirmingDeleteId] = useState(null);
 
   const load = useCallback(async () => {
     setIsLoading(true);
@@ -28,6 +29,19 @@ export default function ReadingListPage() {
 
   useEffect(() => { load(); }, [load]);
 
+  function requestRemove(bookId) {
+    setConfirmingDeleteId(bookId);
+  };
+
+  function cancelRemove() {
+    setConfirmingDeleteId(null);
+  };
+
+  async function confirmRemove(bookId) {
+    const ok = await handleRemove(bookId);
+    if (ok) setConfirmingDeleteId(null);
+  };
+
   async function handleStatusChange(bookId, nextStatus) {
     try {
       setBooks(prev => prev.map(b => b._id === bookId ? { ...b, status: nextStatus } : b));
@@ -39,19 +53,23 @@ export default function ReadingListPage() {
   };
 
   async function handleRemove(id) {
-    if (!window.confirm('Remove This Book?')) return;
-
     const wasLastOnPage = books.length === 1 && page > 1;
-
     try {
       await removeBook(id);
       setBooks((prev) => prev.filter(b => b._id !== id));
       setTotalCount((n) => Math.max(0, n - 1));
       if (wasLastOnPage) setPage(p => Math.max(1, p - 1));
+      return true;
     } catch (e) {
       setErrorMessage(e.message);
+      return false;
     }
-  }
+  };
+
+  function onConfirmKeyDown(e, id) {
+    if (e.key === 'Enter') { e.preventDefault(); confirmRemove(id); }
+    if (e.key === 'Escape') { e.preventDefault(); cancelRemove(); }
+  };
 
   return (
     <section className="stack">
@@ -108,7 +126,30 @@ export default function ReadingListPage() {
               <option value="done">Done</option>
             </select>
 
-            <button className="danger" onClick={() => handleRemove(book._id)} type="button">Remove</button>
+            {confirmingDeleteId === book._id ? (
+              <div className="inline-confirm" role="group" aria-label="Confirm removal" onKeyDown={(e) => onConfirmKeyDown(e, book._id)}>
+                <span className="muted small">Remove?</span>
+                <button
+                  className="danger"
+                  type="button"
+                  onClick={() => confirmRemove(book._id)}
+                  autoFocus
+                >
+                  Yes
+                </button>
+                <button type="button" onClick={cancelRemove}>No</button>
+              </div>
+            ) : (
+              <button
+                className="danger"
+                type="button"
+                onClick={() => requestRemove(book._id)}
+                aria-haspopup="true"
+                aria-expanded={confirmingDeleteId === book._id}
+              >
+                Remove
+              </button>
+            )}
           </li>
         ))}
       </ul>

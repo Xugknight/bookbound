@@ -64,7 +64,6 @@ export default function SearchPage() {
     runSearch(1);
   }
 
-  // optional: run search when changing page via buttons
   useEffect(() => {
     if (page !== 1) runSearch(page);
     // eslint-disable-next-line react-hooks/exhaustive-deps
