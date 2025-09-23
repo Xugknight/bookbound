@@ -273,7 +273,7 @@ export default function ReadingListPage() {
               <div className="muted small">{(book.authors || []).join(', ') || 'Unknown author'}</div>
             </div>
 
-            <div className="stack small" style={{ minWidth: 220 }}>
+            <div className="stack small" style={{ minWidth: 0, maxWidth: '100%' }}>
               {editingNotesId === book._id ? (
                 <div className="stack">
                   <textarea
@@ -297,8 +297,8 @@ export default function ReadingListPage() {
                   {book.notes ? (
                     <>
                       <div
-                        className={`muted small ${expandedNotes.has(book._id) ? '' : 'notes-snippet'}`}
-                        style={{ whiteSpace: 'pre-wrap' }}
+                        className={`muted small ${expandedNotes.has(book._id) ? 'notes-full' : 'notes-snippet'}`}
+                        style={{ whiteSpace: 'pre-wrap', overflowWrap: 'anywhere', wordBreak: 'break-word' }}
                       >
                         {book.notes}
                       </div>

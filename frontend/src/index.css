@@ -13,22 +13,23 @@
 html,
 body {
   height: 100%;
+  margin: 0;
   background: var(--bg);
   color: var(--text);
 }
 
 * {
-  box-sizing: border-box
+  box-sizing: border-box;
 }
 
 a {
-  color: var(--accent)
+  color: var(--accent);
 }
 
 .container {
   max-width: 900px;
   margin: 0 auto;
-  padding: 1.2rem
+  padding: 1.2rem;
 }
 
 .card {
@@ -36,7 +37,11 @@ a {
   border: 1px solid var(--border);
   border-radius: var(--radius);
   box-shadow: var(--shadow);
-  padding: 1rem
+  padding: 1rem;
+}
+
+.card>* {
+  min-width: 0;
 }
 
 button {
@@ -45,11 +50,11 @@ button {
   border: none;
   border-radius: 10px;
   padding: .55rem .9rem;
-  cursor: pointer
+  cursor: pointer;
 }
 
 button:hover {
-  filter: brightness(1.05)
+  filter: brightness(1.05);
 }
 
 input,
@@ -59,11 +64,11 @@ select {
   color: var(--text);
   border: 1px solid var(--border);
   border-radius: 10px;
-  padding: .55rem
+  padding: .55rem;
 }
 
 .muted {
-  color: var(--muted)
+  color: var(--muted);
 }
 
 .inline-confirm {
@@ -72,15 +77,15 @@ select {
   align-items: center;
 }
 
-.inline-confirm .danger {
-  padding: 0.4rem 0.6rem;
+.inline-confirm button {
+  min-width: 4.5rem;
 }
 
 .stars {
   display: inline-flex;
   align-items: center;
   gap: .25rem;
-  font-size: 1.15rem;
+  font-size: 1.2rem;
 }
 
 .star {
@@ -99,18 +104,8 @@ select {
 }
 
 .star:focus-visible {
-  outline: 2px solid var(--focus, #a78bfa);
+  outline: 2px solid var(--accent);
   outline-offset: 2px;
-}
-
-.inline-confirm {
-  display: inline-flex;
-  gap: .5rem;
-  align-items: center;
-}
-
-.inline-confirm button {
-  min-width: 3.25rem;
 }
 
 .notes-snippet {
@@ -118,4 +113,10 @@ select {
   -webkit-box-orient: vertical;
   display: -webkit-box;
   overflow: hidden;
+}
+
+.notes-full {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
