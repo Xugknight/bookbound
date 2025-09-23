@@ -75,3 +75,47 @@ select {
 .inline-confirm .danger {
   padding: 0.4rem 0.6rem;
 }
+
+.stars {
+  display: inline-flex;
+  align-items: center;
+  gap: .25rem;
+  font-size: 1.15rem;
+}
+
+.star {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  padding: 0 .1rem;
+  line-height: 1;
+  color: var(--text, #eae6f2);
+  opacity: .7;
+}
+
+.star.filled {
+  color: var(--accent, #c084fc);
+  opacity: 1;
+}
+
+.star:focus-visible {
+  outline: 2px solid var(--focus, #a78bfa);
+  outline-offset: 2px;
+}
+
+.inline-confirm {
+  display: inline-flex;
+  gap: .5rem;
+  align-items: center;
+}
+
+.inline-confirm button {
+  min-width: 3.25rem;
+}
+
+.notes-snippet {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}

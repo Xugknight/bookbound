@@ -8,11 +8,9 @@ const bookSchema = new Schema(
         title: { type: String, required: true, trim: true, maxLength: 180 },
         authors: { type: [String], default: [] },
         coverId: { type: Number, default: null },
-
         status: { type: String, enum: ['to-read', 'reading', 'done'], default: 'to-read', index: true },
         rating: { type: Number, min: 1, max: 5, default: null },
         notes: { type: String, trim: true, maxLength: 2000 },
-
         order: { type: Number, default: () => Date.now() }
     },
     { timestamps: true }

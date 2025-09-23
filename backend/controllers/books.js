@@ -5,6 +5,8 @@ module.exports = {
     create,
     delete: remove,
     update: updateStatus,
+    updateNotes,
+    updateRating,
 };
 
 async function index(req, res) {
@@ -105,3 +107,41 @@ async function updateStatus(req, res) {
         res.status(400).json({ message: err.message || 'Update Failed' });
     }
 };
+
+async function updateNotes(req, res) {
+    try {
+        const { notes = '' } = req.body || {};
+        const updated = await Book.findOneAndUpdate(
+            { _id: req.params.id, owner: req.user._id },
+            { $set: { notes } },
+            { new: true, runValidators: true }
+        );
+        if (!updated) return res.status(404).json({ message: 'Not Found' });
+        res.json(updated);
+    } catch (err) {
+        res.status(400).json({ message: err.message || 'Update Failed' });
+    }
+};
+
+async function updateRating(req, res) {
+    try {
+        let { rating } = req.body || {};
+        if (rating === null || rating === undefined || rating === '') rating = null;
+        else {
+            rating = parseInt(rating, 10);
+            if (!Number.isFinite(rating) || rating < 1 || rating > 5) {
+                return res.status(400).json({ message: 'Invalid Rating' });
+            }
+        }
+
+        const updated = await Book.findOneAndUpdate(
+            { _id: req.params.id, owner: req.user._id },
+            { $set: { rating } },
+            { new: true, runValidators: true }
+        );
+        if (!updated) return res.status(404).json({ message: 'Not Found' });
+        res.json(updated);
+    } catch (err) {
+        res.status(400).json({ message: err.message || 'Update Failed' });
+    }
+}

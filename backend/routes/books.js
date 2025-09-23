@@ -9,5 +9,7 @@ router.get('/', booksCtrl.index);
 router.post('/', booksCtrl.create);
 router.delete('/:id', booksCtrl.delete);
 router.patch('/:id/status', booksCtrl.update);
+router.patch('/:id/notes', booksCtrl.updateNotes);
+router.patch('/:id/rating', booksCtrl.updateRating);
 
 module.exports = router;

@@ -55,3 +55,25 @@ export async function updateBookStatus(id, status) {
 async function safeJson(res) {
   try { return await res.json(); } catch { return null; }
 }
+
+export async function updateBookNotes(id, notes) {
+  const res = await fetch(`/api/books/${id}/notes`, {
+    method: 'PATCH',
+    headers: withAuth({ 'Content-Type': 'application/json' }),
+    body: JSON.stringify({ notes })
+  });
+  const payload = await safeJson(res);
+  if (!res.ok) throw new Error(payload?.message || `Update Failed (${res.status})`);
+  return payload;
+}
+
+export async function updateBookRating(id, rating) {
+  const res = await fetch(`/api/books/${id}/rating`, {
+    method: 'PATCH',
+    headers: withAuth({ 'Content-Type': 'application/json' }),
+    body: JSON.stringify({ rating })
+  });
+  const payload = await safeJson(res);
+  if (!res.ok) throw new Error(payload?.message || `Update Failed (${res.status})`);
+  return payload;
+}
