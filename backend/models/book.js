@@ -10,7 +10,7 @@ const bookSchema = new Schema(
         coverId: { type: Number, default: null },
         status: { type: String, enum: ['to-read', 'reading', 'done'], default: 'to-read', index: true },
         rating: { type: Number, min: 1, max: 5, default: null },
-        notes: { type: String, trim: true, maxLength: 2000 },
+        notes: { type: String, trim: true, maxLength: 500 },
         order: { type: Number, default: () => Date.now() }
     },
     { timestamps: true }

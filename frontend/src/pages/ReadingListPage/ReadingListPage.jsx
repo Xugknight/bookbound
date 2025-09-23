@@ -15,6 +15,7 @@ export default function ReadingListPage() {
   const [confirmingDeleteId, setConfirmingDeleteId] = useState(null);
   const [editingNotesId, setEditingNotesId] = useState(null);
   const [notesDraft, setNotesDraft] = useState('');
+  const [expandedNotes, setExpandedNotes] = useState(new Set());
 
   const [page, setPage] = useState(() => {
     const params = new URLSearchParams(window.location.search);
@@ -143,7 +144,7 @@ export default function ReadingListPage() {
   async function saveNotes(bookId) {
     const prev = books;
     try {
-      setBooks(p => p.map(b => b._id === bookId ? { ...b, notes: notesDraft } : b)); // optimistic
+      setBooks(p => p.map(b => b._id === bookId ? { ...b, notes: notesDraft } : b));
       await updateBookNotes(bookId, notesDraft);
       setEditingNotesId(null);
       setNotesDraft('');
@@ -151,6 +152,14 @@ export default function ReadingListPage() {
       setErrorMessage(e.message);
       setBooks(prev);
     }
+  };
+
+  function toggleNotes(id) {
+    setExpandedNotes(prev => {
+      const next = new Set(prev);
+      next.has(id) ? next.delete(id) : next.add(id);
+      return next;
+    });
   };
 
   async function handleRatingChange(bookId, nextRating) {
@@ -271,10 +280,13 @@ export default function ReadingListPage() {
                     rows={3}
                     value={notesDraft}
                     onChange={(e) => setNotesDraft(e.target.value)}
-                    maxLength={2000}
+                    maxLength={500}
                     placeholder="Add notes…"
                     style={{ width: '100%' }}
                   />
+                  <div className="muted small" aria-live="polite">
+                    {notesDraft.length}/500
+                  </div>
                   <div style={{ display: 'flex', gap: '.5rem' }}>
                     <button className="primary" type="button" onClick={() => saveNotes(book._id)}>Save</button>
                     <button type="button" onClick={cancelEditNotes}>Cancel</button>
@@ -282,16 +294,28 @@ export default function ReadingListPage() {
                 </div>
               ) : (
                 <div>
-                  {book.notes
-                    ? (
+                  {book.notes ? (
+                    <>
                       <div
-                        className="muted small notes-snippet"
+                        className={`muted small ${expandedNotes.has(book._id) ? '' : 'notes-snippet'}`}
                         style={{ whiteSpace: 'pre-wrap' }}
                       >
                         {book.notes}
                       </div>
-                    )
-                    : <div className="muted small" style={{ fontStyle: 'italic' }}>No notes</div>}
+                      {book.notes.length > 140 && (
+                        <button
+                          type="button"
+                          className="icon-button"
+                          onClick={() => toggleNotes(book._id)}
+                          aria-expanded={expandedNotes.has(book._id)}
+                        >
+                          {expandedNotes.has(book._id) ? 'Show Less' : 'Show More'}
+                        </button>
+                      )}
+                    </>
+                  ) : (
+                    <div className="muted small" style={{ fontStyle: 'italic' }}>No notes</div>
+                  )}
                   <button type="button" onClick={() => beginEditNotes(book)}>Notes</button>
                 </div>
               )}
