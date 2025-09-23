@@ -6,14 +6,15 @@ const app = express();
 require('dotenv').config();
 require('./db');
 
+app.set('trust proxy', 1);
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.static(path.join(__dirname, '../frontend/dist')));
 
 app.get('/api/health', (_req, res) => res.json({ ok: true }));
 
-app.use(require('./middleware/checkToken'));
 app.use('/api/auth', require('./routes/auth'));
+app.use(require('./middleware/checkToken'));
 app.use('/api/books', require('./routes/books'));
 app.use('/api/ol', require('./routes/openLibrary'));
 
