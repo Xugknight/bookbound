@@ -17,10 +17,11 @@ export async function createBook({ workKey, title, authors = [], coverId = null 
   return payload;
 }
 
-export async function listBooks({ page = 1, limit = 10, q = '', status = '' } = {}) {
+export async function listBooks({ page = 1, limit = 10, q = '', status = '', sort = 'added' } = {}) {
   const params = new URLSearchParams({ page: String(page), limit: String(limit) });
   if (q.trim()) params.set('q', q.trim());
   if (status) params.set('status', status);
+  if (sort) params.set('sort', sort);
 
   const res = await fetch(`/api/books?${params.toString()}`, {
     headers: withAuth()

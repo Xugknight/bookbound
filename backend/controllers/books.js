@@ -1,38 +1,63 @@
 const Book = require('../models/book');
 
-module.exports = { 
-    index, 
+module.exports = {
+    index,
     create,
     delete: remove,
     update: updateStatus,
 };
 
 async function index(req, res) {
-    const currentPage = Math.max(1, parseInt(req.query.page, 10) || 1);
-    const itemsPerPage = Math.min(25, Math.max(1, parseInt(req.query.limit, 10) || 10));
+    const page = Math.max(1, parseInt(req.query.page, 10) || 1);
+    const limit = Math.min(25, Math.max(1, parseInt(req.query.limit, 10) || 10));
     const statusFilter = (req.query.status || '').trim();
-    const searchQuery = (req.query.q || '').trim();
+    const q = (req.query.q || '').trim();
+    const sortKey = (req.query.sort || 'added').trim();
 
     const filter = { owner: req.user._id };
-    if (statusFilter && ['to-read', 'reading', 'done'].includes(statusFilter)) filter.status = statusFilter;
-    if (searchQuery) {
+    if (statusFilter && ['to-read', 'reading', 'done'].includes(statusFilter)) {
+        filter.status = statusFilter;
+    }
+    if (q) {
         filter.$or = [
-            { title: { $regex: searchQuery, $options: 'i' } },
-            { authors: { $elemMatch: { $regex: searchQuery, $options: 'i' } } },
-            { notes: { $regex: searchQuery, $options: 'i' } },
+            { title: { $regex: q, $options: 'i' } },
+            { authors: { $elemMatch: { $regex: q, $options: 'i' } } },
+            { notes: { $regex: q, $options: 'i' } },
         ];
     }
 
-    const totalCount = await Book.countDocuments(filter);
-    const totalPages = Math.max(1, Math.ceil(totalCount / itemsPerPage));
-    const skipCount = (currentPage - 1) * itemsPerPage;
+    let sortSpec;
+    switch (sortKey) {
+        case 'title':
+            sortSpec = { title: 1, order: -1 };
+            break;
+        case 'author':
+            sortSpec = { 'authors.0': 1, order: -1 };
+            break;
+        case 'status':
+            sortSpec = { status: 1, order: -1, createdAt: -1 };
+            break;
+        case 'added':
+        default:
+            sortSpec = { order: -1, createdAt: -1 };
+            break;
+    }
 
-    const pageData = await Book.find(filter)
-        .sort({ order: -1, createdAt: -1 })
-        .skip(skipCount)
-        .limit(itemsPerPage);
+    const total = await Book.countDocuments(filter);
+    const pages = Math.max(1, Math.ceil(total / limit));
+    const skip = (page - 1) * limit;
 
-    res.json({ data: pageData, total: totalCount, page: currentPage, pages: totalPages });
+    let query = Book.find(filter)
+        .sort(sortSpec)
+        .skip(skip)
+        .limit(limit);
+
+    if (sortKey === 'title' || sortKey === 'author' || sortKey === 'status') {
+        query = query.collation({ locale: 'en', strength: 2 });
+    }
+
+    const data = await query.exec();
+    res.json({ data, total, page, pages });
 }
 
 async function create(req, res) {
@@ -68,7 +93,7 @@ async function updateStatus(req, res) {
         if (!allowed.includes(status)) {
             return res.status(400).json({ message: 'Invalid Status' });
         }
-        
+
         const updated = await Book.findOneAndUpdate(
             { _id: req.params.id, owner: req.user._id },
             { $set: { status } },

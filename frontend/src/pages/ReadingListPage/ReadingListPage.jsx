@@ -3,6 +3,7 @@ import { listBooks, removeBook, updateBookStatus } from '../../services/bookServ
 import { coverUrl } from '../../services/olService';
 
 const VALID_STATUSES = ['to-read', 'reading', 'done'];
+const VALID_SORTS = ['added', 'title', 'author', 'status'];
 
 export default function ReadingListPage() {
   const [books, setBooks] = useState([]);
@@ -29,6 +30,12 @@ export default function ReadingListPage() {
     return (params.get('q') || '').trim();
   });
 
+  const [sortKey, setSortKey] = useState(() => {
+    const params = new URLSearchParams(window.location.search);
+    const s = (params.get('sort') || 'added').trim();
+    return VALID_SORTS.includes(s) ? s : 'added';
+  });
+
   const [debouncedQuery, setDebouncedQuery] = useState(query);
   useEffect(() => {
     const id = setTimeout(() => setDebouncedQuery(query), 300);
@@ -39,7 +46,13 @@ export default function ReadingListPage() {
     setIsLoading(true);
     setErrorMessage('');
     try {
-      const { data, total, pages } = await listBooks({ page, limit: 10, status: statusFilter, q: debouncedQuery });
+      const { data, total, pages } = await listBooks({
+        page,
+        limit: 10,
+        status: statusFilter,
+        q: debouncedQuery,
+        sort: sortKey,
+      });
       setBooks(data);
       setTotalCount(total);
       setTotalPages(pages);
@@ -48,7 +61,7 @@ export default function ReadingListPage() {
     } finally {
       setIsLoading(false);
     }
-  }, [page, statusFilter, debouncedQuery]);
+  }, [page, statusFilter, debouncedQuery, sortKey]);
 
   useEffect(() => { load(); }, [load]);
 
@@ -63,36 +76,19 @@ export default function ReadingListPage() {
     if (page > 1) params.set('page', String(page));
     if (statusFilter) params.set('status', statusFilter);
     if (query.trim()) params.set('q', query.trim());
+    if (sortKey && sortKey !== 'added') params.set('sort', sortKey);
 
-    const newUrl = params.toString()
-      ? `?${params.toString()}`
-      : window.location.pathname;
-
+    const newUrl = params.toString() ? `?${params.toString()}` : window.location.pathname;
     window.history.replaceState(null, '', newUrl);
-  }, [page, statusFilter, query]);
+  }, [page, statusFilter, query, sortKey]);
 
-  function requestRemove(bookId) {
-    setConfirmingDeleteId(bookId);
-  };
-
-  function cancelRemove() {
-    setConfirmingDeleteId(null);
-  };
+  function requestRemove(bookId) { setConfirmingDeleteId(bookId); }
+  function cancelRemove() { setConfirmingDeleteId(null); }
 
   async function confirmRemove(bookId) {
     const ok = await handleRemove(bookId);
     if (ok) setConfirmingDeleteId(null);
-  };
-
-  async function handleStatusChange(bookId, nextStatus) {
-    try {
-      setBooks(prev => prev.map(b => b._id === bookId ? { ...b, status: nextStatus } : b));
-      await updateBookStatus(bookId, nextStatus);
-    } catch (e) {
-      setErrorMessage(e.message);
-      load();
-    }
-  };
+  }
 
   async function handleRemove(id) {
     const wasLastOnPage = books.length === 1 && page > 1;
@@ -106,15 +102,24 @@ export default function ReadingListPage() {
       setErrorMessage(e.message);
       return false;
     }
-  };
+  }
 
   function onConfirmKeyDown(e, id) {
     if (e.key === 'Enter') { e.preventDefault(); confirmRemove(id); }
     if (e.key === 'Escape') { e.preventDefault(); cancelRemove(); }
-  };
-
+  }
   function onConfirmBlur(e) {
     if (!e.currentTarget.contains(e.relatedTarget)) cancelRemove();
+  }
+
+  async function handleStatusChange(bookId, nextStatus) {
+    try {
+      setBooks(prev => prev.map(b => b._id === bookId ? { ...b, status: nextStatus } : b));
+      await updateBookStatus(bookId, nextStatus);
+    } catch (e) {
+      setErrorMessage(e.message);
+      load();
+    }
   }
 
   return (
@@ -135,6 +140,18 @@ export default function ReadingListPage() {
             <option value="to-read">To-Read</option>
             <option value="reading">Reading</option>
             <option value="done">Done</option>
+          </select>
+
+          <label className="small muted" htmlFor="sortKey">Sort:</label>
+          <select
+            id="sortKey"
+            value={sortKey}
+            onChange={(e) => { setPage(1); setSortKey(e.target.value); }}
+          >
+            <option value="added">Recently Added</option>
+            <option value="title">Title (A–Z)</option>
+            <option value="author">Author (A–Z)</option>
+            <option value="status">Status</option>
           </select>
 
           <input
@@ -185,7 +202,7 @@ export default function ReadingListPage() {
 
             <div>
               <div style={{ fontWeight: 600 }}>{book.title}</div>
-              <div className="muted small">{(book.authors || []).join(', ') || 'Unknown Author'}</div>
+              <div className="muted small">{(book.authors || []).join(', ') || 'Unknown author'}</div>
             </div>
 
             <select
