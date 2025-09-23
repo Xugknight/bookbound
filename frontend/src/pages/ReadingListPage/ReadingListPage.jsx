@@ -11,22 +11,35 @@ export default function ReadingListPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [confirmingDeleteId, setConfirmingDeleteId] = useState(null);
+
   const [page, setPage] = useState(() => {
     const params = new URLSearchParams(window.location.search);
     const fromUrl = parseInt(params.get('page') || '1', 10);
     return Number.isFinite(fromUrl) && fromUrl > 1 ? fromUrl : 1;
   });
+
   const [statusFilter, setStatusFilter] = useState(() => {
     const params = new URLSearchParams(window.location.search);
     const s = (params.get('status') || '').trim();
     return VALID_STATUSES.includes(s) ? s : '';
   });
 
+  const [query, setQuery] = useState(() => {
+    const params = new URLSearchParams(window.location.search);
+    return (params.get('q') || '').trim();
+  });
+
+  const [debouncedQuery, setDebouncedQuery] = useState(query);
+  useEffect(() => {
+    const id = setTimeout(() => setDebouncedQuery(query), 300);
+    return () => clearTimeout(id);
+  }, [query]);
+
   const load = useCallback(async () => {
     setIsLoading(true);
     setErrorMessage('');
     try {
-      const { data, total, pages } = await listBooks({ page, limit: 10, status: statusFilter });
+      const { data, total, pages } = await listBooks({ page, limit: 10, status: statusFilter, q: debouncedQuery });
       setBooks(data);
       setTotalCount(total);
       setTotalPages(pages);
@@ -35,7 +48,7 @@ export default function ReadingListPage() {
     } finally {
       setIsLoading(false);
     }
-  }, [page, statusFilter]);
+  }, [page, statusFilter, debouncedQuery]);
 
   useEffect(() => { load(); }, [load]);
 
@@ -49,13 +62,14 @@ export default function ReadingListPage() {
     const params = new URLSearchParams();
     if (page > 1) params.set('page', String(page));
     if (statusFilter) params.set('status', statusFilter);
+    if (query.trim()) params.set('q', query.trim());
 
     const newUrl = params.toString()
       ? `?${params.toString()}`
       : window.location.pathname;
 
     window.history.replaceState(null, '', newUrl);
-  }, [page, statusFilter]);
+  }, [page, statusFilter, query]);
 
   function requestRemove(bookId) {
     setConfirmingDeleteId(bookId);
@@ -122,6 +136,28 @@ export default function ReadingListPage() {
             <option value="reading">Reading</option>
             <option value="done">Done</option>
           </select>
+
+          <input
+            className="search"
+            type="search"
+            placeholder="Search your list…"
+            value={query}
+            onChange={(e) => { setPage(1); setQuery(e.target.value); }}
+            style={{ width: '16rem' }}
+            aria-label="Search in my reading list"
+          />
+          {query && (
+            <button
+              type="button"
+              className="icon-button"
+              title="Clear search"
+              aria-label="Clear search"
+              onClick={() => { setQuery(''); setPage(1); }}
+            >
+              Clear
+            </button>
+          )}
+
           <div className="muted small">{totalCount} total</div>
         </div>
       </div>
@@ -149,7 +185,7 @@ export default function ReadingListPage() {
 
             <div>
               <div style={{ fontWeight: 600 }}>{book.title}</div>
-              <div className="muted small">{(book.authors || []).join(', ') || 'Unknown author'}</div>
+              <div className="muted small">{(book.authors || []).join(', ') || 'Unknown Author'}</div>
             </div>
 
             <select
