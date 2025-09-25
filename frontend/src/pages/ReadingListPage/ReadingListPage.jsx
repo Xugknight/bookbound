@@ -179,7 +179,7 @@ export default function ReadingListPage() {
   return (
     <section className="stack">
       <div className="toolbar card">
-        <h2 className="page-title">My Reading List</h2>
+        <h1 className="page-title">My Reading List</h1>
         <div className="toolbar__group">
           <label className="small muted" htmlFor="statusFilter">Filter:</label>
           <select id="statusFilter" value={statusFilter} onChange={(e) => { setPage(1); setStatusFilter(e.target.value); }}>

@@ -67,8 +67,8 @@ export default function SearchPage() {
 
   return (
     <section className="stack">
-      <div className="card">
-        <h2 className="page-title">Search Open Library</h2>
+      <div className="card page-card">
+        <h1 className="page-title">Search Open Library</h1>
         <form className="search-form" onSubmit={handleSubmit}>
           <input
             type="search"

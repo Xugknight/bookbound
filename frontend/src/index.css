@@ -21,23 +21,11 @@ body {
   height: 100%;
   background: var(--bg);
   color: var(--text);
-  font: 16px/1.5 system-ui, -apple-system, Segoe UI, Roboto, Inter, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
 }
 
 a {
   color: var(--accent);
   text-decoration: none;
-}
-
-h1,
-h2,
-h3 {
-  line-height: 1.25;
-}
-
-h1,
-h2 {
-  margin: .2rem 0 .6rem;
 }
 
 /* Layout */
@@ -47,19 +35,34 @@ h2 {
   padding: 1.2rem;
 }
 
-main {
-  margin-top: 1rem;
-}
-
-/* replaces inline margin on main */
-
+/* Uniform space below nav + default page grid */
 .page {
+  margin-top: 1rem;
   display: grid;
-  gap: 1rem;
+  gap: .75rem;
 }
 
-/* page section wrapper */
+.stack {
+  display: grid;
+  gap: .75rem;
+}
 
+/* Centered page shell (Home / signed-out List prompt) */
+.center-page {
+  display: grid;
+  place-items: center;
+  min-height: 60vh;
+}
+
+/* Narrow, centered “hero” card used at top of pages */
+.page-card {
+  text-align: center;
+  max-width: 640px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+/* Cards */
 .card {
   background: var(--surface);
   border: 1px solid var(--border);
@@ -68,22 +71,13 @@ main {
   padding: 1rem;
 }
 
-.stack {
-  display: grid;
-  gap: .75rem;
-}
-
-.center-page {
-  display: grid;
-  place-items: center;
-  min-height: 60vh;
-}
-
-.page-card {
+/* Headings (use on h1 or h2 for consistent look) */
+.page-title {
+  margin: 0;
+  font-size: 1.5rem;
+  line-height: 1.2;
+  font-weight: 700;
   text-align: center;
-  max-width: 640px;
-  width: 100%;
-  margin-inline: auto;
 }
 
 /* Toolbar / Pagination */
@@ -94,11 +88,6 @@ main {
   justify-content: space-between;
 }
 
-.toolbar h2 {
-  margin: 0;
-}
-
-/* no inline needed */
 .toolbar__group {
   display: flex;
   gap: .5rem;
@@ -125,10 +114,6 @@ main {
 
 .small {
   font-size: .9rem;
-}
-
-.italic {
-  font-style: italic;
 }
 
 .error {
@@ -184,16 +169,13 @@ select {
   gap: .5rem;
   margin-top: .75rem;
   flex-wrap: wrap;
+  justify-content: center;
+  /* center inputs under title */
 }
 
 .search-results {
   display: grid;
   gap: .75rem;
-}
-
-.ol-link {
-  display: inline-block;
-  margin-top: .25rem;
 }
 
 /* Lists */
@@ -211,16 +193,17 @@ select {
   align-items: start;
 }
 
+/* Prevent content (like long notes) from forcing columns to grow */
+.book-item>* {
+  min-width: 0;
+}
+
 .book-item--search {
   grid-template-columns: 64px 1fr auto;
 }
 
 .book-item--list {
   grid-template-columns: 48px 1fr minmax(220px, 2fr) auto auto auto;
-}
-
-.book-title {
-  font-weight: 600;
 }
 
 /* Covers */
@@ -303,12 +286,30 @@ select {
   -webkit-box-orient: vertical;
   display: -webkit-box;
   overflow: hidden;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 .notes-full {
   overflow-wrap: anywhere;
   word-break: break-word;
   white-space: pre-wrap;
+}
+
+/* Nav */
+.nav {
+  display: flex;
+  gap: .75rem;
+  align-items: center;
+}
+
+.nav__spacer {
+  margin-left: auto;
+}
+
+/* Utilities */
+.no-top-margin {
+  margin-top: 0;
 }
 
 /* Responsive */
@@ -328,63 +329,4 @@ select {
   .pagination {
     gap: .75rem;
   }
-}
-
-/* Nav */
-.nav {
-  display: flex;
-  gap: .75rem;
-  align-items: center;
-}
-
-.nav__spacer {
-  margin-left: auto;
-}
-
-/* Layout: consistent top spacing below nav */
-main {
-  margin-top: 1rem;
-}
-
-/* Page titles look the same regardless of h1/h2 */
-.page-title {
-  margin: 0;
-  text-align: center;
-  font-weight: 700;
-  font-size: clamp(1.25rem, 2vw + 1rem, 1.75rem);
-  line-height: 1.2;
-}
-
-/* Center the search form contents under the heading */
-.search-form {
-  justify-content: center;
-}
-
-/* Error text utility */
-.text-error {
-  color: #f87171;
-}
-
-/* Inline link spacing utility (replaces inline margin styles) */
-.link-inline {
-  display: inline-block;
-  margin-top: .25rem;
-}
-
-/* Auth forms */
-.auth-card {
-  max-width: 480px;
-  width: 100%;
-  text-align: center;
-}
-
-.form-grid {
-  display: grid;
-  gap: .5rem;
-}
-
-.form-actions {
-  display: flex;
-  gap: .5rem;
-  justify-content: center;
 }

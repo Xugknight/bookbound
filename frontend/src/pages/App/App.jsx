@@ -39,7 +39,7 @@ export default function App() {
         )}
       </nav>
 
-      <main>
+      <main className="page">
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/search" element={<SearchPage />} />
