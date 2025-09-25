@@ -25,16 +25,20 @@ export default function SignUpPage({ setUser }) {
     }
 
     return (
-        <section className="card stack">
-            <h2>Sign Up</h2>
-            <form className="stack" onSubmit={handleSubmit}>
-                <input name="name" placeholder="Name" value={formData.name} onChange={handleChange} required />
-                <input type="email" name="email" placeholder="Email" value={formData.email} onChange={handleChange} required />
-                <input type="password" name="password" placeholder="Password" value={formData.password} onChange={handleChange} required />
-                <input type="password" name="confirm" placeholder="Confirm Password" value={formData.confirm} onChange={handleChange} required />
-                <button className="primary" type="submit" disabled={disable}>Create account</button>
-                {errorMsg && <p className="muted" style={{ color: '#f87171' }}>{errorMsg}</p>}
-            </form>
+        <section className="center-page container">
+            <div className="card page-card auth-card">
+                <h2 className="page-title">Sign Up</h2>
+                <form className="form-grid" onSubmit={handleSubmit}>
+                    <input name="name" placeholder="Name" value={formData.name} onChange={handleChange} required />
+                    <input type="email" name="email" placeholder="Email" value={formData.email} onChange={handleChange} required />
+                    <input type="password" name="password" placeholder="Password" value={formData.password} onChange={handleChange} required />
+                    <input type="password" name="confirm" placeholder="Confirm Password" value={formData.confirm} onChange={handleChange} required />
+                    <div className="form-actions">
+                        <button className="primary" type="submit" disabled={disable}>Create Account</button>
+                    </div>
+                    {errorMsg && <p className="muted text-error">{errorMsg}</p>}
+                </form>
+            </div>
         </section>
     );
 }

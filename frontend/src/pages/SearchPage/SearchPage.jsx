@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react';
 import { searchOpenLibrary, coverUrl } from '../../services/olService';
 import { createBook, listBooks } from '../../services/bookService';
 
-
 export default function SearchPage() {
   const [query, setQuery] = useState('');
   const [page, setPage] = useState(1);
@@ -14,23 +13,19 @@ export default function SearchPage() {
   const [addedKeys, setAddedKeys] = useState(new Set());
 
   useEffect(() => {
-  let isCancelled = false;
-  async function loadSaved() {
-    try {
-      const { data } = await listBooks({ page: 1, limit: 500 });
-      if (!isCancelled) setAddedKeys(new Set(data.map((b) => b.workKey)));
-    } catch (_ignored) {
-      return;
+    let isCancelled = false;
+    async function loadSaved() {
+      try {
+        const { data } = await listBooks({ page: 1, limit: 500 });
+        if (!isCancelled) setAddedKeys(new Set(data.map((b) => b.workKey)));
+      } catch (_ignored) { }
     }
-  }
-  loadSaved();
-  return () => { isCancelled = true; };
-}, []);
+    loadSaved();
+    return () => { isCancelled = true; };
+  }, []);
 
   async function runSearch(nextPage = 1) {
-    if (!query.trim()) {
-      setResults([]); setNumFound(0); setPage(1); return;
-    }
+    if (!query.trim()) { setResults([]); setNumFound(0); setPage(1); return; }
     setIsLoading(true);
     setErrorMessage('');
     try {
@@ -66,16 +61,15 @@ export default function SearchPage() {
 
   useEffect(() => {
     if (page !== 1) runSearch(page);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page]);
 
   const totalPages = Math.max(1, Math.ceil(numFound / 20));
 
   return (
-    <section className="stack" style={{ display: 'grid', gap: '1rem' }}>
+    <section className="stack">
       <div className="card">
-        <h2 style={{ margin: 0 }}>Search Open Library</h2>
-        <form onSubmit={handleSubmit} style={{ display: 'flex', gap: '.5rem', marginTop: '.75rem' }}>
+        <h2 className="page-title">Search Open Library</h2>
+        <form className="search-form" onSubmit={handleSubmit}>
           <input
             type="search"
             placeholder="Title, Author, Keywords…"
@@ -84,7 +78,7 @@ export default function SearchPage() {
           />
           <button className="primary" type="submit" disabled={isLoading}>Search</button>
         </form>
-        {errorMessage && <p className="muted" style={{ color: '#f87171' }}>{errorMessage}</p>}
+        {errorMessage && <p className="muted text-error">{errorMessage}</p>}
       </div>
 
       {isLoading && <div className="card">Loading…</div>}
@@ -94,21 +88,16 @@ export default function SearchPage() {
       )}
 
       {!isLoading && results.length > 0 && (
-        <div className="card" style={{ display: 'grid', gap: '.75rem' }}>
+        <div className="card search-results">
           <div className="muted small">{numFound.toLocaleString()} found</div>
-          <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'grid', gap: '.75rem' }}>
+          <ul className="book-list">
             {results.map((book) => {
               const src = coverUrl(book.coverId, 'M');
               const authors = book.authors?.join(', ') || 'Unknown Author';
               return (
-                <li key={book.workKey}
-                  style={{ display: 'grid', gridTemplateColumns: '64px 1fr auto', gap: '.75rem', alignItems: 'center' }}>
-                  <div style={{
-                    width: 64, height: 96, background: '#2A2231', border: '1px solid var(--border)',
-                    borderRadius: '8px', display: 'grid', placeItems: 'center', overflow: 'hidden'
-                  }}>
-                    {src ? <img src={src} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                      : <span className="muted small">No cover</span>}
+                <li key={book.workKey} className="book-item book-item--search">
+                  <div className="cover cover--md">
+                    {src ? <img src={src} alt="" /> : <span className="muted small">No cover</span>}
                   </div>
                   <div>
                     <div style={{ fontWeight: 600 }}>{book.title}</div>
@@ -120,8 +109,7 @@ export default function SearchPage() {
                       href={`https://openlibrary.org${book.workKey}`}
                       target="_blank"
                       rel="noreferrer"
-                      className="muted small"
-                      style={{ display: 'inline-block', marginTop: '.25rem' }}
+                      className="muted small link-inline"
                     >
                       View on Open Library ↗
                     </a>
@@ -141,7 +129,7 @@ export default function SearchPage() {
             })}
           </ul>
 
-          <div style={{ display: 'flex', gap: '.5rem', alignItems: 'center', justifyContent: 'space-between', marginTop: '.5rem' }}>
+          <div className="pagination">
             <button disabled={page <= 1} onClick={() => setPage((p) => Math.max(1, p - 1))}>Prev</button>
             <span className="muted small">Page {page} of {totalPages}</span>
             <button disabled={page >= totalPages} onClick={() => setPage((p) => Math.min(totalPages, p + 1))}>Next</button>

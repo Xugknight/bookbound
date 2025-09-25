@@ -1,11 +1,15 @@
 import { useEffect, useState, useCallback } from 'react';
+import { Link } from 'react-router';
 import { listBooks, removeBook, updateBookStatus, updateBookNotes, updateBookRating } from '../../services/bookService';
+import { getToken } from '../../services/authService';
 import { coverUrl } from '../../services/olService';
 
 const VALID_STATUSES = ['to-read', 'reading', 'done'];
 const VALID_SORTS = ['added', 'title', 'author', 'status'];
 
 export default function ReadingListPage() {
+  const isAuthed = !!getToken();
+
   const [books, setBooks] = useState([]);
   const [totalPages, setTotalPages] = useState(1);
   const [totalCount, setTotalCount] = useState(0);
@@ -85,19 +89,12 @@ export default function ReadingListPage() {
     window.history.replaceState(null, '', newUrl);
   }, [page, statusFilter, query, sortKey]);
 
-  function requestRemove(bookId) {
-    setConfirmingDeleteId(bookId);
-  };
-
-  function cancelRemove() {
-    setConfirmingDeleteId(null);
-  };
-
+  function requestRemove(bookId) { setConfirmingDeleteId(bookId); }
+  function cancelRemove() { setConfirmingDeleteId(null); }
   async function confirmRemove(bookId) {
     const ok = await handleRemove(bookId);
     if (ok) setConfirmingDeleteId(null);
-  };
-
+  }
   async function handleRemove(id) {
     const wasLastOnPage = books.length === 1 && page > 1;
     try {
@@ -110,16 +107,14 @@ export default function ReadingListPage() {
       setErrorMessage(e.message);
       return false;
     }
-  };
-
+  }
   function onConfirmKeyDown(e, id) {
     if (e.key === 'Enter') { e.preventDefault(); confirmRemove(id); }
     if (e.key === 'Escape') { e.preventDefault(); cancelRemove(); }
-  };
-
+  }
   function onConfirmBlur(e) {
     if (!e.currentTarget.contains(e.relatedTarget)) cancelRemove();
-  };
+  }
 
   async function handleStatusChange(bookId, nextStatus) {
     try {
@@ -129,18 +124,10 @@ export default function ReadingListPage() {
       setErrorMessage(e.message);
       load();
     }
-  };
+  }
 
-  function beginEditNotes(book) {
-    setEditingNotesId(book._id);
-    setNotesDraft(book.notes || '');
-  };
-
-  function cancelEditNotes() {
-    setEditingNotesId(null);
-    setNotesDraft('');
-  };
-
+  function beginEditNotes(book) { setEditingNotesId(book._id); setNotesDraft(book.notes || ''); }
+  function cancelEditNotes() { setEditingNotesId(null); setNotesDraft(''); }
   async function saveNotes(bookId) {
     const prev = books;
     try {
@@ -152,7 +139,7 @@ export default function ReadingListPage() {
       setErrorMessage(e.message);
       setBooks(prev);
     }
-  };
+  }
 
   function toggleNotes(id) {
     setExpandedNotes(prev => {
@@ -160,7 +147,7 @@ export default function ReadingListPage() {
       next.has(id) ? next.delete(id) : next.add(id);
       return next;
     });
-  };
+  }
 
   async function handleRatingChange(bookId, nextRating) {
     const prev = books;
@@ -171,22 +158,31 @@ export default function ReadingListPage() {
       setErrorMessage(e.message);
       setBooks(prev);
     }
-  };
+  }
+
+  if (!isAuthed) {
+    return (
+      <section className="center-page container">
+        <div className="card page-card">
+          <h2 className="page-title">My Reading List</h2>
+          <p className="muted">You’re not signed in. Log in to view and manage your reading list.</p>
+          <div className="toolbar__group toolbar__group--center">
+            <Link to="/login"><button type="button">Log In</button></Link>
+            <Link to="/signup"><button type="button">Sign Up</button></Link>
+            <Link to="/search"><button className="primary" type="button">Browse Books</button></Link>
+          </div>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className="stack">
-      <div
-        className="toolbar"
-        style={{ display: 'flex', gap: '.5rem', alignItems: 'center', justifyContent: 'space-between' }}
-      >
-        <h2 style={{ margin: 0 }}>My Reading List</h2>
-        <div style={{ display: 'flex', gap: '.5rem', alignItems: 'center' }}>
+      <div className="toolbar card">
+        <h2 className="page-title">My Reading List</h2>
+        <div className="toolbar__group">
           <label className="small muted" htmlFor="statusFilter">Filter:</label>
-          <select
-            id="statusFilter"
-            value={statusFilter}
-            onChange={(e) => { setPage(1); setStatusFilter(e.target.value); }}
-          >
+          <select id="statusFilter" value={statusFilter} onChange={(e) => { setPage(1); setStatusFilter(e.target.value); }}>
             <option value="">All</option>
             <option value="to-read">To-Read</option>
             <option value="reading">Reading</option>
@@ -194,11 +190,7 @@ export default function ReadingListPage() {
           </select>
 
           <label className="small muted" htmlFor="sortKey">Sort:</label>
-          <select
-            id="sortKey"
-            value={sortKey}
-            onChange={(e) => { setPage(1); setSortKey(e.target.value); }}
-          >
+          <select id="sortKey" value={sortKey} onChange={(e) => { setPage(1); setSortKey(e.target.value); }}>
             <option value="added">Recently Added</option>
             <option value="title">Title (A–Z)</option>
             <option value="author">Author (A–Z)</option>
@@ -211,7 +203,6 @@ export default function ReadingListPage() {
             placeholder="Search your list…"
             value={query}
             onChange={(e) => { setPage(1); setQuery(e.target.value); }}
-            style={{ width: '16rem' }}
             aria-label="Search in my reading list"
           />
           {query && (
@@ -230,42 +221,15 @@ export default function ReadingListPage() {
         </div>
       </div>
 
-      {errorMessage && (
-        <div className="card" style={{ color: '#f87171' }} role="status" aria-live="polite">
-          {errorMessage}
-        </div>
-      )}
+      {errorMessage && <div className="card text-error" role="status" aria-live="polite">{errorMessage}</div>}
       {isLoading && <div className="card">Loading…</div>}
       {!isLoading && books.length === 0 && <div className="card">No Books Yet. Add From Search.</div>}
 
-      <ul
-        style={{
-          listStyle: 'none',
-          margin: 0,
-          padding: 0,
-          display: 'grid',
-          gap: '.75rem'
-        }}
-      >
+      <ul className="book-list">
         {books.map((book) => (
-          <li
-            key={book._id}
-            className="card"
-            style={{
-              display: 'grid',
-              gridTemplateColumns: '48px 1fr minmax(220px, 2fr) auto auto auto',
-              gap: '.75rem',
-              alignItems: 'start'
-            }}
-          >
-            <div style={{
-              width: 48, height: 72, border: '1px solid var(--border)',
-              borderRadius: 8, overflow: 'hidden', background: '#2A2231',
-              display: 'grid', placeItems: 'center'
-            }}>
-              {book.coverId
-                ? <img alt="" src={coverUrl(book.coverId, 'S')} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                : <span className="muted small">No Cover</span>}
+          <li key={book._id} className="card book-item book-item--list">
+            <div className="cover cover--sm">
+              {book.coverId ? <img alt="" src={coverUrl(book.coverId, 'S')} /> : <span className="muted small">No Cover</span>}
             </div>
 
             <div>
@@ -273,7 +237,7 @@ export default function ReadingListPage() {
               <div className="muted small">{(book.authors || []).join(', ') || 'Unknown author'}</div>
             </div>
 
-            <div className="stack small" style={{ minWidth: 0, maxWidth: '100%' }}>
+            <div className="stack small notes-col">
               {editingNotesId === book._id ? (
                 <div className="stack">
                   <textarea
@@ -282,12 +246,11 @@ export default function ReadingListPage() {
                     onChange={(e) => setNotesDraft(e.target.value)}
                     maxLength={500}
                     placeholder="Add notes…"
-                    style={{ width: '100%' }}
                   />
                   <div className="muted small" aria-live="polite">
                     {notesDraft.length}/500
                   </div>
-                  <div style={{ display: 'flex', gap: '.5rem' }}>
+                  <div className="toolbar__group">
                     <button className="primary" type="button" onClick={() => saveNotes(book._id)}>Save</button>
                     <button type="button" onClick={cancelEditNotes}>Cancel</button>
                   </div>
@@ -296,10 +259,7 @@ export default function ReadingListPage() {
                 <div>
                   {book.notes ? (
                     <>
-                      <div
-                        className={`muted small ${expandedNotes.has(book._id) ? 'notes-full' : 'notes-snippet'}`}
-                        style={{ whiteSpace: 'pre-wrap', overflowWrap: 'anywhere', wordBreak: 'break-word' }}
-                      >
+                      <div className={`muted small ${expandedNotes.has(book._id) ? 'notes-full' : 'notes-snippet'}`}>
                         {book.notes}
                       </div>
                       {book.notes.length > 140 && (
@@ -338,17 +298,9 @@ export default function ReadingListPage() {
             </select>
 
             {confirmingDeleteId === book._id ? (
-              <div
-                className="inline-confirm"
-                role="group"
-                aria-label="Confirm removal"
-                onKeyDown={(e) => onConfirmKeyDown(e, book._id)}
-                onBlur={onConfirmBlur}
-              >
+              <div className="inline-confirm" role="group" aria-label="Confirm removal" onKeyDown={(e) => onConfirmKeyDown(e, book._id)} onBlur={onConfirmBlur}>
                 <span className="muted small">Remove?</span>
-                <button className="danger" type="button" onClick={() => confirmRemove(book._id)} autoFocus>
-                  Yes
-                </button>
+                <button className="danger" type="button" onClick={() => confirmRemove(book._id)} autoFocus>Yes</button>
                 <button type="button" onClick={cancelRemove}>No</button>
               </div>
             ) : (
@@ -366,7 +318,7 @@ export default function ReadingListPage() {
         ))}
       </ul>
 
-      <div className="pagination">
+      <div className="card pagination">
         <button disabled={page <= 1} onClick={() => setPage(p => Math.max(1, p - 1))}>Prev</button>
         <span>Page {page} of {totalPages}</span>
         <button disabled={page >= totalPages} onClick={() => setPage(p => Math.min(totalPages, p + 1))}>Next</button>

@@ -24,14 +24,18 @@ export default function LogInPage({ setUser }) {
     }
 
     return (
-        <section className="card stack">
-            <h2>Log In</h2>
-            <form className="stack" onSubmit={handleSubmit}>
-                <input type="email" name="email" placeholder="Email" value={formData.email} onChange={handleChange} required />
-                <input type="password" name="password" placeholder="Password" value={formData.password} onChange={handleChange} required />
-                <button className="primary" type="submit">Log In</button>
-                {errorMsg && <p className="muted" style={{ color: '#f87171' }}>{errorMsg}</p>}
-            </form>
+        <section className="center-page container">
+            <div className="card page-card auth-card">
+                <h2 className="page-title">Log In</h2>
+                <form className="form-grid" onSubmit={handleSubmit}>
+                    <input type="email" name="email" placeholder="Email" value={formData.email} onChange={handleChange} required />
+                    <input type="password" name="password" placeholder="Password" value={formData.password} onChange={handleChange} required />
+                    <div className="form-actions">
+                        <button className="primary" type="submit">Log In</button>
+                    </div>
+                    {errorMsg && <p className="muted text-error">{errorMsg}</p>}
+                </form>
+            </div>
         </section>
     );
 }
