@@ -1,11 +1,5 @@
 const rateLimit = require('express-rate-limit');
-
-function ipKey(req) {
-  return req.ip || req.connection?.remoteAddress || 'unknown';
-}
-function userOrIpKey(req) {
-  return req.user?._id?.toString() || ipKey(req);
-}
+const { ipKeyGenerator } = require('express-rate-limit');
 
 function friendlyHandler(req, res, _next, options) {
   const secs = Math.ceil((options.windowMs || 60_000) / 1000);
@@ -23,7 +17,7 @@ const authLimiter = rateLimit({
   max: 20,
   standardHeaders: 'draft-7',
   legacyHeaders: false,
-  keyGenerator: ipKey,
+  keyGenerator: (req) => ipKeyGenerator(req),
   skip: (req) => req.method === 'OPTIONS' || req.path === '/api/health',
   message: { message: 'Too many attempts. Try again shortly.' },
   handler: friendlyHandler,
@@ -34,7 +28,7 @@ const olSearchLimiter = rateLimit({
   max: 30,
   standardHeaders: 'draft-7',
   legacyHeaders: false,
-  keyGenerator: ipKey,
+  keyGenerator: (req) => ipKeyGenerator(req),
   skip: (req) => req.method === 'OPTIONS' || req.path === '/api/health',
   message: { message: 'Too many searches. Please slow down.' },
   handler: friendlyHandler,
@@ -45,7 +39,7 @@ const writeLimiter = rateLimit({
   max: 120,
   standardHeaders: 'draft-7',
   legacyHeaders: false,
-  keyGenerator: userOrIpKey,
+  keyGenerator: (req) => ipKeyGenerator(req, req.user?._id?.toString()),
   skip: (req) => req.method === 'OPTIONS' || req.path === '/api/health',
   message: { message: 'Too many changes in a short time. Please slow down.' },
   handler: friendlyHandler,
