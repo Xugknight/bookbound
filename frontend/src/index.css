@@ -9,6 +9,8 @@
   --radius: 12px;
   --shadow: 0 8px 30px rgba(0, 0, 0, .25);
   --focus: #a78bfa;
+  --gap: .75rem;
+  /* added to back your gap usages */
 }
 
 /* Base */
@@ -39,12 +41,12 @@ a {
 .page {
   margin-top: 1rem;
   display: grid;
-  gap: .75rem;
+  gap: var(--gap);
 }
 
 .stack {
   display: grid;
-  gap: .75rem;
+  gap: var(--gap);
 }
 
 /* Centered page shell (Home / signed-out List prompt) */
@@ -120,6 +122,14 @@ a {
   color: #f87171;
 }
 
+.text-italic {
+  font-style: italic;
+}
+
+.book-title {
+  font-weight: 600;
+}
+
 /* Controls */
 button {
   background: var(--accent);
@@ -173,9 +183,12 @@ select {
   /* center inputs under title */
 }
 
+/* Results card matches header width and keeps consistent gap */
 .search-results {
   display: grid;
-  gap: .75rem;
+  gap: var(--gap);
+  margin-top: 16px;
+  width: min(720px, 100%);
 }
 
 /* Lists */
@@ -184,13 +197,17 @@ select {
   margin: 0;
   padding: 0;
   display: grid;
-  gap: .75rem;
+  gap: var(--gap);
 }
 
 .book-item {
   display: grid;
-  gap: .75rem;
+  gap: var(--gap);
   align-items: start;
+}
+
+.book-item.card:hover {
+  filter: brightness(1.03);
 }
 
 /* Prevent content (like long notes) from forcing columns to grow */
@@ -282,9 +299,9 @@ select {
 }
 
 .notes-snippet {
+  display: -webkit-box;
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
-  display: -webkit-box;
   overflow: hidden;
   overflow-wrap: anywhere;
   word-break: break-word;
@@ -299,7 +316,7 @@ select {
 /* Nav */
 .nav {
   display: flex;
-  gap: .75rem;
+  gap: var(--gap);
   align-items: center;
 }
 
@@ -327,10 +344,11 @@ select {
   }
 
   .pagination {
-    gap: .75rem;
+    gap: var(--gap);
   }
 }
 
+/* Auth forms */
 .form-grid {
   display: grid;
   grid-template-columns: 1fr;
@@ -346,8 +364,4 @@ select {
   display: flex;
   justify-content: flex-end;
   gap: var(--gap);
-}
-
-.book-title {
-  font-weight: 600;
 }

@@ -233,7 +233,7 @@ export default function ReadingListPage() {
             </div>
 
             <div>
-              <div style={{ fontWeight: 600 }}>{book.title}</div>
+              <div className="book-title">{book.title}</div>
               <div className="muted small">{(book.authors || []).join(', ') || 'Unknown author'}</div>
             </div>
 
@@ -259,7 +259,9 @@ export default function ReadingListPage() {
                 <div>
                   {book.notes ? (
                     <>
-                      <div className={`muted small ${expandedNotes.has(book._id) ? 'notes-full' : 'notes-snippet'}`}>
+                      <div 
+                        id={`notes-${book._id}`}
+                        className={`muted small ${expandedNotes.has(book._id) ? 'notes-full' : 'notes-snippet'}`}>
                         {book.notes}
                       </div>
                       {book.notes.length > 140 && (
@@ -268,13 +270,14 @@ export default function ReadingListPage() {
                           className="icon-button"
                           onClick={() => toggleNotes(book._id)}
                           aria-expanded={expandedNotes.has(book._id)}
+                          aria-controls={`notes-${book._id}`}
                         >
                           {expandedNotes.has(book._id) ? 'Show Less' : 'Show More'}
                         </button>
                       )}
                     </>
                   ) : (
-                    <div className="muted small" style={{ fontStyle: 'italic' }}>No notes</div>
+                    <div className="muted small text-italic">No notes</div>
                   )}
                   <button type="button" onClick={() => beginEditNotes(book)}>Notes</button>
                 </div>
