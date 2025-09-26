@@ -1,7 +1,11 @@
-export async function searchOpenLibrary({ query, page = 1 }) {
+export async function searchOpenLibrary({ query, page = 1, limit = 10 }) {
     if (!query?.trim()) return { results: [], numFound: 0, page: 1 };
 
-    const params = new URLSearchParams({ q: query.trim(), page: String(page) });
+    const params = new URLSearchParams({
+        q: query.trim(),
+        page: String(page),
+        limit: String(limit),
+    });
     const res = await fetch(`/api/ol/search?${params.toString()}`);
 
     if (res.status === 429) {

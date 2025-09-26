@@ -23,21 +23,22 @@ module.exports = {
 async function search(req, res) {
     const rawQuery = (req.query.q || '').trim();
     const page = Math.max(1, parseInt(req.query.page, 10) || 1);
+    const limit = Math.min(50, Math.max(1, parseInt(req.query.limit, 10) || 10));
     if (!rawQuery) return res.status(400).json({ message: 'Missing Query Param: q' });
     if (rawQuery.length > 100) return res.status(400).json({ message: 'Query Too Long' });
 
-    const cacheKey = `${rawQuery.toLowerCase()}::${page}`;
+    const cacheKey = `${rawQuery.toLowerCase()}::${page}::${limit}`;
     const cached = getCache(cacheKey);
     if (cached) return res.json(cached);
 
     const url =
         `${BASE_URL}?q=${encodeURIComponent(rawQuery)}&page=${page}` +
         `&fields=key,title,author_name,cover_i,first_publish_year` +
-        `&limit=20`;
+        `&limit=${limit}`;
 
     try {
         const data = await fetchWithTimeoutAndRetry(url, { retries: 1, timeoutMs: 6000 });
-        const results = (data.docs || []).slice(0, 20).map((doc) => ({
+        const results = (data.docs || []).slice(0, limit).map((doc) => ({
             workKey: doc.key,
             title: doc.title,
             authors: doc.author_name || [],
@@ -49,6 +50,7 @@ async function search(req, res) {
             results,
             numFound: data.numFound || results.length,
             page,
+            limit,
         });
     } catch (err) {
         console.error('Open Library Search Failed:', err.message);

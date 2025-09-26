@@ -6,6 +6,8 @@ import { createBook, listBooks } from '../../services/bookService';
 export default function SearchPage() {
   const [query, setQuery] = useState('');
   const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(10);
+  const [hasSearched, setHasSearched] = useState(false);
   const [results, setResults] = useState([]);
   const [numFound, setNumFound] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
@@ -29,7 +31,7 @@ export default function SearchPage() {
     setIsLoading(true);
     setErrorMessage('');
     try {
-      const data = await searchOpenLibrary({ query, page: nextPage });
+      const data = await searchOpenLibrary({ query, page: nextPage, limit });
       setResults(data.results || []);
       setNumFound(data.numFound || 0);
       setPage(data.page || nextPage);
@@ -56,14 +58,22 @@ export default function SearchPage() {
 
   function handleSubmit(e) {
     e.preventDefault();
+    setHasSearched(true);
     runSearch(1);
   }
 
+
   useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
     if (page !== 1) runSearch(page);
   }, [page]);
 
-  const totalPages = Math.max(1, Math.ceil(numFound / 20));
+  useEffect(() => {
+    setPage(1);
+    if (query.trim()) { setHasSearched(true); runSearch(1); }
+  }, [limit]);
+
+  const totalPages = Math.max(1, Math.ceil(numFound / limit));
 
   return (
     <section className="center-page">
@@ -78,6 +88,26 @@ export default function SearchPage() {
             onChange={(e) => { setQuery(e.target.value); }}
           />
           <button className="primary" type="submit" disabled={isLoading}>Search</button>
+
+          {hasSearched && (
+            <div className="card results-toolbar">
+              <div className="toolbar__group toolbar__group--center">
+                <label htmlFor="perPage" className="small muted">Results per page</label>
+                <select
+                  id="perPage"
+                  value={limit}
+                  onChange={(e) => setLimit(parseInt(e.target.value, 10))}
+                  aria-label="Results per page"
+                >
+                  <option value={10}>10</option>
+                  <option value={20}>20</option>
+                  <option value={30}>30</option>
+                  <option value={50}>50</option>
+                </select>
+              </div>
+            </div>
+          )}
+
         </form>
         {errorMessage && <p className="muted text-error">{errorMessage}</p>}
       </div>

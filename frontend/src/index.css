@@ -180,7 +180,10 @@ select {
   margin-top: .75rem;
   flex-wrap: wrap;
   justify-content: center;
-  /* center inputs under title */
+}
+
+.search-form select {
+  min-width: 4.5rem;
 }
 
 /* Results card matches header width and keeps consistent gap */
@@ -189,6 +192,11 @@ select {
   gap: var(--gap);
   margin-top: 16px;
   width: min(720px, 100%);
+}
+
+.results-toolbar {
+  width: min(720px, 100%);
+  margin-top: 8px;
 }
 
 /* Lists */
