@@ -330,3 +330,24 @@ select {
     gap: .75rem;
   }
 }
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--gap);
+}
+
+.form-grid>* {
+  width: 100%;
+}
+
+.form-actions {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--gap);
+}
+
+.book-title {
+  font-weight: 600;
+}

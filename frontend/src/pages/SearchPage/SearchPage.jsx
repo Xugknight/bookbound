@@ -66,12 +66,13 @@ export default function SearchPage() {
   const totalPages = Math.max(1, Math.ceil(numFound / 20));
 
   return (
-    <section className="stack">
-      <div className="card page-card">
+    <section className="center-page">
+      <div className="page-card card">
         <h1 className="page-title">Search Open Library</h1>
         <form className="search-form" onSubmit={handleSubmit}>
           <input
             type="search"
+            name='query'
             placeholder="Title, Author, Keywords…"
             value={query}
             onChange={(e) => { setQuery(e.target.value); }}
@@ -100,7 +101,7 @@ export default function SearchPage() {
                     {src ? <img src={src} alt="" /> : <span className="muted small">No cover</span>}
                   </div>
                   <div>
-                    <div style={{ fontWeight: 600 }}>{book.title}</div>
+                    <div className="book-title">{book.title}</div>
                     <div className="muted small">{authors}</div>
                     {book.firstPublishYear && (
                       <div className="muted small">First published: {book.firstPublishYear}</div>
