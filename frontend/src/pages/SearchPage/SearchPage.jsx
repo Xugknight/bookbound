@@ -77,7 +77,7 @@ export default function SearchPage() {
 
   return (
     <section className="center-page">
-      <div className="page-card card">
+      <div className="page-card card narrow">
         <h1 className="page-title">Search Open Library</h1>
         <form className="search-form" onSubmit={handleSubmit}>
           <input
@@ -119,53 +119,58 @@ export default function SearchPage() {
       )}
 
       {!isLoading && results.length > 0 && (
-        <div className="decor-grid">
-          <div className="card search-results">
-            <div className="muted small">{numFound.toLocaleString()} found</div>
-            <ul className="book-list">
-              {results.map((book) => {
-                const src = coverUrl(book.coverId, 'M');
-                const authors = book.authors?.join(', ') || 'Unknown Author';
-                return (
-                  <li key={book.workKey} className="book-item book-item--search">
-                    <div className="cover cover--md">
-                      {src ? <img src={src} alt="" /> : <span className="muted small">No cover</span>}
-                    </div>
-                    <div>
-                      <div className="book-title">{book.title}</div>
-                      <div className="muted small">{authors}</div>
-                      {book.firstPublishYear && (
-                        <div className="muted small">First published: {book.firstPublishYear}</div>
-                      )}
-                      <a
-                        href={`https://openlibrary.org${book.workKey}`}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="muted small link-inline"
-                      >
-                        View on Open Library ↗
-                      </a>
-                    </div>
-                    <div>
-                      <button
-                        type="button"
-                        onClick={() => handleAdd(book)}
-                        disabled={addedKeys.has(book.workKey)}
-                        title={addedKeys.has(book.workKey) ? 'Already in Your List' : 'Add to Reading List'}
-                      >
-                        {addedKeys.has(book.workKey) ? 'Added' : 'Add'}
-                      </button>
-                    </div>
-                  </li>
-                );
-              })}
-            </ul>
-
-            <div className="pagination">
-              <button disabled={page <= 1} onClick={() => setPage((p) => Math.max(1, p - 1))}>Prev</button>
-              <span className="muted small">Page {page} of {totalPages}</span>
-              <button disabled={page >= totalPages} onClick={() => setPage((p) => Math.min(totalPages, p + 1))}>Next</button>
+        <div className="card search-results narrow">
+          <div className="results-head">
+            <h2 className="results-title">
+              Search results{query.trim() ? ` for “${query.trim()}”` : ''}
+            </h2>
+            <div className="results-meta muted small">
+              {numFound.toLocaleString()} found • {limit} per page
             </div>
+          </div>
+          <ul className="book-list">
+            {results.map((book) => {
+              const src = coverUrl(book.coverId, 'M');
+              const authors = book.authors?.join(', ') || 'Unknown Author';
+              return (
+                <li key={book.workKey} className="book-item book-item--search">
+                  <div className="cover cover--md">
+                    {src ? <img src={src} alt="" /> : <span className="muted small">No cover</span>}
+                  </div>
+                  <div>
+                    <div className="book-title">{book.title}</div>
+                    <div className="muted small">{authors}</div>
+                    {book.firstPublishYear && (
+                      <div className="muted small">First published: {book.firstPublishYear}</div>
+                    )}
+                    <a
+                      href={`https://openlibrary.org${book.workKey}`}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="muted small link-inline"
+                    >
+                      View on Open Library ↗
+                    </a>
+                  </div>
+                  <div>
+                    <button
+                      type="button"
+                      onClick={() => handleAdd(book)}
+                      disabled={addedKeys.has(book.workKey)}
+                      title={addedKeys.has(book.workKey) ? 'Already in Your List' : 'Add to Reading List'}
+                    >
+                      {addedKeys.has(book.workKey) ? 'Added' : 'Add'}
+                    </button>
+                  </div>
+                </li>
+              );
+            })}
+          </ul>
+
+          <div className="pagination">
+            <button disabled={page <= 1} onClick={() => setPage((p) => Math.max(1, p - 1))}>Prev</button>
+            <span className="muted small">Page {page} of {totalPages}</span>
+            <button disabled={page >= totalPages} onClick={() => setPage((p) => Math.min(totalPages, p + 1))}>Next</button>
           </div>
         </div>
       )}

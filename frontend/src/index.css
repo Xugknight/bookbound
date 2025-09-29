@@ -1,5 +1,4 @@
 :root {
-  /* Theme */
   --bg: #D9C9A4;
   --surface: #EDE2C6;
   --border: #B49E73;
@@ -13,7 +12,18 @@
   --gap: .75rem;
 }
 
-/* Base */
+body {
+  font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", sans-serif;
+}
+
+.page-title,
+.results-title,
+.book-title {
+  font-family: "Source Serif 4", Georgia, "Times New Roman", Times, serif;
+}
+
+
+/* ========== Base ========== */
 * {
   box-sizing: border-box;
 }
@@ -23,11 +33,11 @@ body {
   height: 100%;
   color: var(--text);
   background:
-    repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.012) 0, rgba(0, 0, 0, 0.012) 1px, transparent 2px),
-    radial-gradient(1600px 1100px at 10% -20%, rgba(83, 37, 124, 0.05), transparent 75%),
-    radial-gradient(1800px 1200px at 90% -10%, rgba(132, 87, 193, 0.045), transparent 78%),
-    radial-gradient(2000px 1300px at 50% 120%, rgba(92, 67, 36, 0.05), transparent 76%),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(0, 0, 0, 0)),
+    repeating-linear-gradient(0deg, rgba(0, 0, 0, .012) 0, rgba(0, 0, 0, .012) 1px, transparent 2px),
+    radial-gradient(1600px 1100px at 10% -20%, rgba(83, 37, 124, .05), transparent 75%),
+    radial-gradient(1800px 1200px at 90% -10%, rgba(132, 87, 193, .045), transparent 78%),
+    radial-gradient(2000px 1300px at 50% 120%, rgba(92, 67, 36, .05), transparent 76%),
+    linear-gradient(180deg, rgba(255, 255, 255, .08), rgba(0, 0, 0, 0)),
     var(--bg);
   background-repeat: no-repeat;
   background-attachment: fixed;
@@ -60,7 +70,7 @@ a:focus {
   text-decoration: underline;
 }
 
-/* Layout */
+/* ========== Layout ========== */
 .container {
   max-width: 900px;
   margin: 0 auto;
@@ -80,9 +90,9 @@ a:focus {
   inset: 0;
   pointer-events: none;
   background:
-    radial-gradient(1200px 800px at -10% -10%, rgba(0, 0, 0, 0.04), transparent 60%),
-    radial-gradient(1200px 800px at 110% -10%, rgba(0, 0, 0, 0.04), transparent 60%),
-    radial-gradient(1200px 800px at 50% 110%, rgba(0, 0, 0, 0.05), transparent 60%);
+    radial-gradient(1200px 800px at -10% -10%, rgba(0, 0, 0, .04), transparent 60%),
+    radial-gradient(1200px 800px at 110% -10%, rgba(0, 0, 0, .04), transparent 60%),
+    radial-gradient(1200px 800px at 50% 110%, rgba(0, 0, 0, .05), transparent 60%);
 }
 
 .stack {
@@ -103,16 +113,20 @@ a:focus {
   margin: 0 auto;
 }
 
-/* Cards */
+.narrow {
+  width: min(720px, 100%);
+  margin: 0 auto;
+}
+
+/* ========== Cards & Headings ========== */
 .card {
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.35) inset, var(--shadow);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, .35) inset, var(--shadow);
   padding: 1rem;
 }
 
-/* Headings */
 .page-title {
   margin: 0;
   font-size: 1.5rem;
@@ -121,44 +135,13 @@ a:focus {
   text-align: center;
 }
 
-/* Toolbar / Pagination */
-.toolbar {
-  display: flex;
-  gap: .5rem;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.toolbar__group {
-  display: flex;
-  gap: .5rem;
-  align-items: center;
-  flex-wrap: wrap;
-}
-
-.toolbar__group--center {
-  justify-content: center;
-}
-
-.pagination {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: .5rem;
-  margin-top: .5rem;
-}
-
-/* Text */
+/* ========== Text ========== */
 .muted {
   color: var(--muted);
 }
 
 .small {
   font-size: .9rem;
-}
-
-.error {
-  color: #f87171;
 }
 
 .text-italic {
@@ -169,7 +152,11 @@ a:focus {
   font-weight: 600;
 }
 
-/* Controls */
+.error {
+  color: #f87171;
+}
+
+/* ========== Controls ========== */
 button {
   background: var(--accent);
   color: var(--accent-contrast);
@@ -222,45 +209,69 @@ textarea::placeholder {
   outline-offset: 2px;
 }
 
-/* Search */
-.search-form {
+/* Spacing utilities */
+.mt-1 {
+  margin-top: .25rem;
+}
+
+.mt-2 {
+  margin-top: .5rem;
+}
+
+.mt-3 {
+  margin-top: .75rem;
+}
+
+/* ========== Toolbar / Pagination ========== */
+.toolbar {
   display: flex;
   gap: .5rem;
-  margin-top: .75rem;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.toolbar__group {
+  display: flex;
+  gap: .5rem;
+  align-items: center;
   flex-wrap: wrap;
+}
+
+.toolbar__group--center {
   justify-content: center;
 }
 
-.search-form select {
-  min-width: 4.5rem;
+.pagination {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: .5rem;
+  margin-top: .5rem;
 }
 
-/* Results */
-.search-results {
-  display: grid;
-  gap: var(--gap);
-  margin-top: 16px;
-  width: min(720px, 100%);
-}
-
-.results-toolbar {
-  width: min(720px, 100%);
-  margin-top: 8px;
-}
-
-/* Lists */
+/* ========== Lists ========== */
 .book-list {
   list-style: none;
   margin: 0;
   padding: 0;
   display: grid;
-  gap: var(--gap);
+  gap: .5rem;
 }
 
 .book-item {
   display: grid;
   gap: var(--gap);
   align-items: start;
+  padding: .25rem 0;
+  border-top: 1px solid rgba(27, 21, 34, 0.08);
+}
+
+.book-item:first-child {
+  border-top: 0;
+}
+
+.book-item:hover .book-title {
+  text-decoration: underline;
 }
 
 .book-item.card {
@@ -279,10 +290,68 @@ textarea::placeholder {
 
 .book-item--search {
   grid-template-columns: 64px 1fr auto;
+  column-gap: .75rem;
+}
+
+.book-item--search>div:last-child {
+  align-self: center;
 }
 
 .book-item--list {
   grid-template-columns: 48px 1fr minmax(220px, 2fr) auto auto auto;
+}
+
+.search-form {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: .75rem;
+  row-gap: .75rem;
+  margin-top: .75rem;
+  margin-bottom: .5rem;
+}
+
+.search-form select {
+  min-width: 5.25rem;
+}
+
+.results-toolbar {
+  width: min(720px, 100%);
+  margin-top: .75rem;
+}
+
+.results-head {
+  display: grid;
+  gap: .25rem;
+  padding-bottom: .5rem;
+  margin-bottom: .75rem;
+  border-bottom: 1px solid rgba(27, 21, 34, 0.10);
+  position: relative;
+}
+
+.results-head::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -1px;
+  width: 88px;
+  height: 2px;
+  background: linear-gradient(90deg, var(--accent), transparent);
+  opacity: .55;
+}
+
+.results-title {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 700;
+  letter-spacing: .2px;
+}
+
+.search-results {
+  display: grid;
+  gap: var(--gap);
+  margin-top: 1rem;
+  width: min(720px, 100%);
 }
 
 /* Covers */
@@ -391,7 +460,7 @@ textarea::placeholder {
   margin-top: 0;
 }
 
-/* Responsive */
+/* ========== Responsive ========== */
 @media (max-width: 620px) {
   .book-item--search {
     grid-template-columns: 64px 1fr;
@@ -428,164 +497,15 @@ textarea::placeholder {
   gap: var(--gap);
 }
 
-/* ---------- Hero ---------- */
-.hero {
-  display: grid;
-  grid-template-columns: 1.1fr 0.9fr;
-  align-items: center;
-  gap: var(--gap);
-  overflow: hidden;
-}
-
-.hero__content {
-  display: grid;
-  gap: .75rem;
-  justify-items: start;
-  text-align: left;
-}
-
-.hero__title {
-  font-size: 2rem;
-  letter-spacing: 0.2px;
-}
-
-.hero__tagline {
-  font-size: 1rem;
-  max-width: 42ch;
-}
-
-.cta-row {
-  display: flex;
-  gap: .5rem;
-  flex-wrap: wrap;
-}
-
-.hero__ghost {
-  background: #E1D4BA;
-  color: var(--text);
-}
-
-.hero__badges {
-  display: flex;
-  gap: .5rem;
-  flex-wrap: wrap;
-}
-
-.badge {
-  border: 1px solid var(--border);
-  background: #F0E6CB;
-  color: var(--text);
-  padding: .35rem .6rem;
-  border-radius: 999px;
-  font-size: .85rem;
-}
-
-.hero__art {
-  width: 100%;
-  aspect-ratio: 13 / 9;
-  filter: drop-shadow(0 10px 24px rgba(38, 24, 12, 0.20));
-  transform: translateZ(0);
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .hero__art svg {
-    transform: translateY(0);
-    animation: floaty 6s ease-in-out infinite;
-  }
-
-  @keyframes floaty {
-
-    0%,
-    100% {
-      transform: translateY(0px);
-    }
-
-    50% {
-      transform: translateY(-6px);
-    }
-  }
-}
-
-/* ---------- Feature grid ---------- */
-.feature-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: var(--gap);
-}
-
-.feature {
-  display: grid;
-  gap: .5rem;
-  text-align: left;
-}
-
-.feature__icon {
-  font-size: 1.4rem;
-  line-height: 1;
-}
-
-.feature__title {
-  margin: 0;
-  font-size: 1.05rem;
-  font-weight: 700;
-}
-
-/* ---------- CTA strip ---------- */
-.cta-strip__row {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  align-items: center;
-  gap: var(--gap);
-}
-
-.cta-strip__title {
-  margin: 0 0 .25rem 0;
-}
-
-.cta-strip__actions {
-  display: flex;
-  gap: .5rem;
-  flex-wrap: wrap;
-}
-
-/* ---------- Responsive ---------- */
-@media (max-width: 920px) {
-  .hero {
-    grid-template-columns: 1fr;
-  }
-
-  .hero__content {
-    justify-items: center;
-    text-align: center;
-  }
-
-  .hero__title {
-    font-size: 1.8rem;
-  }
-
-  .cta-row {
-    justify-content: center;
-  }
-
-  .feature-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .cta-strip__row {
-    grid-template-columns: 1fr;
-    justify-items: center;
-    text-align: center;
-  }
-}
-
-/* ==== Hero (works with or without /images/hero-reading-nook.jpg) ==== */
+/* ========== Hero ========== */
 .hero {
   position: relative;
   isolation: isolate;
+  width: 100%;
+  min-height: 340px;
+  margin: 0 0 var(--gap) 0;
   border-radius: var(--radius);
   overflow: hidden;
-  margin: 0 auto;
-  width: min(900px, 100%);
 }
 
 .hero__bg {
@@ -593,26 +513,28 @@ textarea::placeholder {
   inset: 0;
   z-index: 0;
   background:
-    /* fallback gradient tint */
     radial-gradient(80% 60% at 50% 20%, rgba(83, 37, 124, .18), transparent 60%),
     linear-gradient(180deg, #EDE2C6 0%, #D9C9A4 100%);
-  background-repeat: no-repeat;
-  background-size: cover;
-  /* If you later add the photo, uncomment the next line: */
   background-image:
-    linear-gradient(to bottom, rgba(26, 20, 16, .0) 0%, rgba(26, 20, 16, .25) 100%),
+    linear-gradient(to bottom, rgba(26, 20, 16, 0) 0%, rgba(26, 20, 16, .25) 100%),
     url("/images/hero-reading-nook.jpg");
+  background-size: cover;
+  background-repeat: no-repeat;
   filter: saturate(.95) contrast(.98);
 }
 
 .hero__inner {
-  position: relative;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
   z-index: 1;
-  margin: 6rem auto;
   width: min(680px, calc(100% - 2rem));
   text-align: center;
   background: rgba(237, 226, 198, .78);
   backdrop-filter: blur(2px);
+  border-radius: var(--radius);
+  padding: 1rem;
 }
 
 .hero__mark {
@@ -623,55 +545,23 @@ textarea::placeholder {
   opacity: .95;
 }
 
-/* Optional: muted decorative grid layer for results/list pages */
-.decor-grid {
-  position: relative;
-  isolation: isolate;
-}
-
-.decor-grid::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  background: url("/images/illus-books-grid.svg") center/600px auto no-repeat;
-  opacity: .08;
-  pointer-events: none;
-}
-
-.decor-grid>* {
-  position: relative;
-  z-index: 1;
-}
-
-/* Paper texture stripe (works even if the file isn't present yet) */
-.paper-texture {
+/* ========== Decorative ========== */
+.paper-texture--cover {
   border-radius: var(--radius);
   background:
     linear-gradient(180deg, rgba(26, 20, 16, .06), rgba(26, 20, 16, .02)),
-    #EDE2C6;
-  /* If you add the texture image, this will overlay nicely */
-  background-image:
-    linear-gradient(180deg, rgba(26, 20, 16, .06), rgba(26, 20, 16, .02)),
     url("/images/texture-parchment.jpg");
-  background-size: 256px, 256px;
-  background-repeat: repeat;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
-/* Section divider that can later use a wood/shelf detail image */
 .section-stripe {
   height: 32px;
   border-radius: var(--radius);
-  background:
-    linear-gradient(180deg, rgba(26, 20, 16, .08), rgba(26, 20, 16, .02));
-  /* If you add shelf-detail.jpg later, uncomment: */
-  /* background-image:
-     linear-gradient(180deg, rgba(26,20,16,.08), rgba(26,20,16,.02)),
-     url("/images/shelf-detail.jpg"); 
-     background-size: cover; */
+  background: linear-gradient(180deg, rgba(26, 20, 16, .08), rgba(26, 20, 16, .02));
 }
 
-/* Tiny bookmark accent row (your /images/illus-bookmarks.svg) */
 .bookmark-accent {
   background: url("/images/illus-bookmarks.svg") center/320px auto no-repeat;
   height: 80px;
