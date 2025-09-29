@@ -112,7 +112,27 @@ export default function SearchPage() {
         {errorMessage && <p className="muted text-error">{errorMessage}</p>}
       </div>
 
-      {isLoading && <div className="card">Loading…</div>}
+      {isLoading && (
+        <div className="card search-results narrow">
+          <div className="results-head">
+            <h2 className="results-title">Searching…</h2>
+            <div className="results-meta muted small">Fetching results</div>
+          </div>
+          <div className="skel-list">
+            {Array.from({ length: limit }).map((_, i) => (
+              <div className="skel-row" key={i}>
+                <div className="skel-cover" />
+                <div className="skel-lines">
+                  <div className="skel-line" />
+                  <div className="skel-line sm" />
+                  <div className="skel-line xs" />
+                </div>
+                <div className="skel-btn" />
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {!isLoading && results.length === 0 && query.trim() && (
         <div className="card">No results for “{query}”.</div>

@@ -189,6 +189,16 @@ button[disabled] {
   cursor: not-allowed;
 }
 
+button:not(.primary):not(.danger) {
+  background: transparent;
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+
+button:not(.primary):not(.danger):hover {
+  background: rgba(83, 37, 124, 0.08);
+}
+
 input,
 textarea,
 select {
@@ -352,6 +362,103 @@ textarea::placeholder {
   gap: var(--gap);
   margin-top: 1rem;
   width: min(720px, 100%);
+}
+
+/* --- Skeleton Loader --- */
+.skel-list {
+  display: grid;
+  gap: .5rem;
+}
+
+.skel-row {
+  display: grid;
+  grid-template-columns: 64px 1fr auto;
+  align-items: start;
+  gap: .75rem;
+  padding: .25rem 0;
+  border-top: 1px solid rgba(27, 21, 34, 0.08);
+}
+
+.skel-row:first-child {
+  border-top: 0;
+}
+
+.skel-cover {
+  width: 64px;
+  height: 96px;
+  border-radius: 8px;
+  background: #E8DAC0;
+  position: relative;
+  overflow: hidden;
+}
+
+.skel-lines {
+  display: grid;
+  gap: .4rem;
+}
+
+.skel-line {
+  height: .8rem;
+  width: 100%;
+  border-radius: 6px;
+  background: #E8DAC0;
+  position: relative;
+  overflow: hidden;
+}
+
+.skel-line.sm {
+  width: 60%;
+  height: .7rem;
+}
+
+.skel-line.xs {
+  width: 40%;
+  height: .7rem;
+}
+
+.skel-btn {
+  width: 72px;
+  height: 36px;
+  border-radius: 10px;
+  background: #E8DAC0;
+  position: relative;
+  overflow: hidden;
+}
+
+/* shimmer */
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.skel-cover::after,
+.skel-line::after,
+.skel-btn::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg,
+      transparent 0%,
+      rgba(255, 255, 255, 0.35) 50%,
+      transparent 100%);
+  transform: translateX(-100%);
+  animation: shimmer 1.25s ease-in-out infinite;
+  opacity: .35;
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+  .skel-cover::after,
+  .skel-line::after,
+  .skel-btn::after {
+    animation: none;
+    opacity: .15;
+  }
 }
 
 /* Covers */

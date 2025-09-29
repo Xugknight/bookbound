@@ -6,6 +6,7 @@ import SearchPage from '../SearchPage/SearchPage';
 import ReadingListPage from '../ReadingListPage/ReadingListPage';
 import LogInPage from '../LogInPage/LogInPage';
 import SignUpPage from '../SignUpPage/SignUpPage';
+import NotFound from '../NotFound/NotFound';
 
 export default function App() {
   const [user, setUser] = useState(getUser());
@@ -50,18 +51,7 @@ export default function App() {
               <Route path="/signup" element={<SignUpPage setUser={setUser} />} />
             </>
           )}
-          <Route
-            path="*"
-            element={
-              <section className="center-page">
-                <div className="page-card card">
-                  <h2 className="page-title">Page not found</h2>
-                  <p className="muted">The page you are looking for does not exist.</p>
-                  <p><Link to="/">Go back home</Link></p>
-                </div>
-              </section>
-            }
-          />
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </main>
     </div>
