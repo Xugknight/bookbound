@@ -177,7 +177,7 @@ export default function ReadingListPage() {
   }
 
   return (
-    <section className="stack">
+    <section className="stack decor-grid">
       <div className="toolbar card">
         <h1 className="page-title">My Reading List</h1>
         <div className="toolbar__group">

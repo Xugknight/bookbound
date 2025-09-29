@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="320" height="120" viewBox="0 0 320 120" fill="none">
+  <defs>
+    <linearGradient id="plum" x1="0" y1="0" x2="0" y2="120">
+      <stop stop-color="#53257C"/>
+      <stop offset="1" stop-color="#8457C1"/>
+    </linearGradient>
+  </defs>
+  <g opacity="0.2">
+    <path d="M20 12h40v86l-20-12-20 12V12Z" fill="url(#plum)"/>
+    <path d="M100 12h28v70l-14-8-14 8V12Z" fill="#53257C"/>
+    <path d="M160 12h36v86l-18-10-18 10V12Z" fill="#70409F"/>
+    <path d="M220 12h24v60l-12-7-12 7V12Z" fill="#3C1B5C"/>
+    <path d="M270 12h32v86l-16-9-16 9V12Z" fill="#8457C1"/>
+  </g>
+</svg>

@@ -1,24 +1,33 @@
 import { Link } from 'react-router';
-import { getToken } from '../../services/authService';
 
 export default function HomePage() {
-  const authed = !!getToken();
   return (
-    <section className="center-page container">
-      <div className="card page-card">
-        <h1 className="page-title">Bookbound</h1>
-        <p className="muted">
-          Build and track your reading list. Search Open Library, save titles, add notes, and rate when you are done.
-        </p>
-        <div className="toolbar__group toolbar__group--center">
-          {!authed && (
-            <>
-              <Link to="/login"><button type="button">Log In</button></Link>
-              <Link to="/signup"><button type="button">Sign Up</button></Link>
-            </>
-          )}
-          <Link to="/search"><button className="primary" type="button">Browse Books</button></Link>
+    <section className="stack">
+      
+      <div className="hero">
+        <div className="hero__bg" role="img" aria-label="Cozy reading nook background" />
+        <div className="hero__inner card">
+          <img className="hero__mark" src="/images/logo-bookbound.svg" alt="" />
+          <h1 className="page-title">Bookbound</h1>
+          <p className="muted" style={{ marginTop: '.25rem' }}>
+            A cozy way to track and enjoy your reading.
+          </p>
+          <div className="toolbar__group toolbar__group--center" style={{ marginTop: '.75rem' }}>
+            <Link to="/signup"><button className="primary" type="button">Get Started</button></Link>
+            <Link to="/search"><button type="button">Browse Books</button></Link>
+          </div>
         </div>
+      </div>
+
+      {/* Soft divider */}
+      <div className="section-stripe" aria-hidden="true" />
+
+      <div className="card paper-texture">
+        <h2 className="page-title">Build your perfect reading list</h2>
+        <p className="muted" style={{ marginTop: '.5rem' }}>
+          Search Open Library, curate your own list, add notes and ratings, and keep your next great read at your fingertips.
+        </p>
+        <div className="bookmark-accent" aria-hidden="true" />
       </div>
     </section>
   );

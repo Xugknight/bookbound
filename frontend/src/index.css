@@ -427,3 +427,253 @@ textarea::placeholder {
   justify-content: flex-end;
   gap: var(--gap);
 }
+
+/* ---------- Hero ---------- */
+.hero {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  align-items: center;
+  gap: var(--gap);
+  overflow: hidden;
+}
+
+.hero__content {
+  display: grid;
+  gap: .75rem;
+  justify-items: start;
+  text-align: left;
+}
+
+.hero__title {
+  font-size: 2rem;
+  letter-spacing: 0.2px;
+}
+
+.hero__tagline {
+  font-size: 1rem;
+  max-width: 42ch;
+}
+
+.cta-row {
+  display: flex;
+  gap: .5rem;
+  flex-wrap: wrap;
+}
+
+.hero__ghost {
+  background: #E1D4BA;
+  color: var(--text);
+}
+
+.hero__badges {
+  display: flex;
+  gap: .5rem;
+  flex-wrap: wrap;
+}
+
+.badge {
+  border: 1px solid var(--border);
+  background: #F0E6CB;
+  color: var(--text);
+  padding: .35rem .6rem;
+  border-radius: 999px;
+  font-size: .85rem;
+}
+
+.hero__art {
+  width: 100%;
+  aspect-ratio: 13 / 9;
+  filter: drop-shadow(0 10px 24px rgba(38, 24, 12, 0.20));
+  transform: translateZ(0);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .hero__art svg {
+    transform: translateY(0);
+    animation: floaty 6s ease-in-out infinite;
+  }
+
+  @keyframes floaty {
+
+    0%,
+    100% {
+      transform: translateY(0px);
+    }
+
+    50% {
+      transform: translateY(-6px);
+    }
+  }
+}
+
+/* ---------- Feature grid ---------- */
+.feature-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--gap);
+}
+
+.feature {
+  display: grid;
+  gap: .5rem;
+  text-align: left;
+}
+
+.feature__icon {
+  font-size: 1.4rem;
+  line-height: 1;
+}
+
+.feature__title {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+
+/* ---------- CTA strip ---------- */
+.cta-strip__row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: var(--gap);
+}
+
+.cta-strip__title {
+  margin: 0 0 .25rem 0;
+}
+
+.cta-strip__actions {
+  display: flex;
+  gap: .5rem;
+  flex-wrap: wrap;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 920px) {
+  .hero {
+    grid-template-columns: 1fr;
+  }
+
+  .hero__content {
+    justify-items: center;
+    text-align: center;
+  }
+
+  .hero__title {
+    font-size: 1.8rem;
+  }
+
+  .cta-row {
+    justify-content: center;
+  }
+
+  .feature-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .cta-strip__row {
+    grid-template-columns: 1fr;
+    justify-items: center;
+    text-align: center;
+  }
+}
+
+/* ==== Hero (works with or without /images/hero-reading-nook.jpg) ==== */
+.hero {
+  position: relative;
+  isolation: isolate;
+  border-radius: var(--radius);
+  overflow: hidden;
+  margin: 0 auto;
+  width: min(900px, 100%);
+}
+
+.hero__bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background:
+    /* fallback gradient tint */
+    radial-gradient(80% 60% at 50% 20%, rgba(83, 37, 124, .18), transparent 60%),
+    linear-gradient(180deg, #EDE2C6 0%, #D9C9A4 100%);
+  background-repeat: no-repeat;
+  background-size: cover;
+  /* If you later add the photo, uncomment the next line: */
+  background-image:
+    linear-gradient(to bottom, rgba(26, 20, 16, .0) 0%, rgba(26, 20, 16, .25) 100%),
+    url("/images/hero-reading-nook.jpg");
+  filter: saturate(.95) contrast(.98);
+}
+
+.hero__inner {
+  position: relative;
+  z-index: 1;
+  margin: 6rem auto;
+  width: min(680px, calc(100% - 2rem));
+  text-align: center;
+  background: rgba(237, 226, 198, .78);
+  backdrop-filter: blur(2px);
+}
+
+.hero__mark {
+  width: 56px;
+  height: 56px;
+  display: inline-block;
+  margin-bottom: .5rem;
+  opacity: .95;
+}
+
+/* Optional: muted decorative grid layer for results/list pages */
+.decor-grid {
+  position: relative;
+  isolation: isolate;
+}
+
+.decor-grid::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background: url("/images/illus-books-grid.svg") center/600px auto no-repeat;
+  opacity: .08;
+  pointer-events: none;
+}
+
+.decor-grid>* {
+  position: relative;
+  z-index: 1;
+}
+
+/* Paper texture stripe (works even if the file isn't present yet) */
+.paper-texture {
+  border-radius: var(--radius);
+  background:
+    linear-gradient(180deg, rgba(26, 20, 16, .06), rgba(26, 20, 16, .02)),
+    #EDE2C6;
+  /* If you add the texture image, this will overlay nicely */
+  background-image:
+    linear-gradient(180deg, rgba(26, 20, 16, .06), rgba(26, 20, 16, .02)),
+    url("/images/texture-parchment.jpg");
+  background-size: 256px, 256px;
+  background-repeat: repeat;
+}
+
+/* Section divider that can later use a wood/shelf detail image */
+.section-stripe {
+  height: 32px;
+  border-radius: var(--radius);
+  background:
+    linear-gradient(180deg, rgba(26, 20, 16, .08), rgba(26, 20, 16, .02));
+  /* If you add shelf-detail.jpg later, uncomment: */
+  /* background-image:
+     linear-gradient(180deg, rgba(26,20,16,.08), rgba(26,20,16,.02)),
+     url("/images/shelf-detail.jpg"); 
+     background-size: cover; */
+}
+
+/* Tiny bookmark accent row (your /images/illus-bookmarks.svg) */
+.bookmark-accent {
+  background: url("/images/illus-bookmarks.svg") center/320px auto no-repeat;
+  height: 80px;
+  opacity: .2;
+}
