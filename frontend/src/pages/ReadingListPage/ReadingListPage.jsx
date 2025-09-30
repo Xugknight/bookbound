@@ -226,99 +226,115 @@ export default function ReadingListPage() {
       {!isLoading && books.length === 0 && <div className="card">No Books Yet. Add From Search.</div>}
 
       <ul className="book-list">
-        {books.map((book) => (
-          <li key={book._id} className="card book-item book-item--list">
-            <div className="cover cover--sm">
-              {book.coverId ? <img alt="" src={coverUrl(book.coverId, 'S')} loading="lazy" width="128" height="192" /> : <span className="muted small">No Cover</span>}
-            </div>
-
-            <div>
-              <div className="book-title">{book.title}</div>
-              <div className="muted small">{(book.authors || []).join(', ') || 'Unknown author'}</div>
-            </div>
-
-            <div className="stack small notes-col">
-              {editingNotesId === book._id ? (
-                <div className="stack">
-                  <textarea
-                    rows={3}
-                    value={notesDraft}
-                    onChange={(e) => setNotesDraft(e.target.value)}
-                    maxLength={500}
-                    placeholder="Add notes…"
+        {books.map((book) => {
+          const src = coverUrl(book.coverId, 'S');
+          return (
+            <li key={book._id} className="card book-item book-item--list">
+              <div className="cover cover--sm">
+                {src ? (
+                  <img
+                    src={src}
+                    alt={`${book.title} cover`}
+                    loading="lazy"
+                    onError={(e) => { e.currentTarget.src = '/images/cover-fallback.svg'; }}
                   />
-                  <div className="muted small" aria-live="polite">
-                    {notesDraft.length}/500
+                ) : (
+                  <img
+                    src="/images/cover-fallback.svg"
+                    alt="No cover available"
+                    loading="lazy"
+                  />
+                )}
+              </div>
+
+              <div>
+                <div className="book-title">{book.title}</div>
+                <div className="muted small">{(book.authors || []).join(', ') || 'Unknown author'}</div>
+              </div>
+
+              <div className="stack small notes-col">
+                {editingNotesId === book._id ? (
+                  <div className="stack">
+                    <textarea
+                      rows={3}
+                      value={notesDraft}
+                      onChange={(e) => setNotesDraft(e.target.value)}
+                      maxLength={500}
+                      placeholder="Add notes…"
+                    />
+                    <div className="muted small" aria-live="polite">
+                      {notesDraft.length}/500
+                    </div>
+                    <div className="toolbar__group">
+                      <button className="primary" type="button" onClick={() => saveNotes(book._id)}>Save</button>
+                      <button type="button" onClick={cancelEditNotes}>Cancel</button>
+                    </div>
                   </div>
-                  <div className="toolbar__group">
-                    <button className="primary" type="button" onClick={() => saveNotes(book._id)}>Save</button>
-                    <button type="button" onClick={cancelEditNotes}>Cancel</button>
+                ) : (
+                  <div>
+                    {book.notes ? (
+                      <>
+                        <div
+                          id={`notes-${book._id}`}
+                          className={`muted small ${expandedNotes.has(book._id) ? 'notes-full' : 'notes-snippet'}`}>
+                          {book.notes}
+                        </div>
+                        {book.notes.length > 140 && (
+                          <button
+                            type="button"
+                            className="icon-button"
+                            onClick={() => toggleNotes(book._id)}
+                            aria-expanded={expandedNotes.has(book._id)}
+                            aria-controls={`notes-${book._id}`}
+                          >
+                            {expandedNotes.has(book._id) ? 'Show Less' : 'Show More'}
+                          </button>
+                        )}
+                      </>
+                    ) : (
+                      <div className="muted small text-italic">No notes</div>
+                    )}
+                    <button type="button" onClick={() => beginEditNotes(book)}>Notes</button>
                   </div>
+                )}
+              </div>
+
+              <StarRating
+                value={book.rating ?? 0}
+                onChange={(r) => handleRatingChange(book._id, r || null)}
+                label={`Rate ${book.title}`}
+              />
+
+              <select
+                aria-label="Change status"
+                value={book.status || 'to-read'}
+                onChange={(e) => handleStatusChange(book._id, e.target.value)}
+              >
+                <option value="to-read">To-Read</option>
+                <option value="reading">Reading</option>
+                <option value="done">Done</option>
+              </select>
+
+              {confirmingDeleteId === book._id ? (
+                <div className="inline-confirm" role="group" aria-label="Confirm removal" onKeyDown={(e) => onConfirmKeyDown(e, book._id)} onBlur={onConfirmBlur}>
+                  <span className="muted small">Remove?</span>
+                  <button className="danger" type="button" onClick={() => confirmRemove(book._id)} autoFocus>Yes</button>
+                  <button type="button" onClick={cancelRemove}>No</button>
                 </div>
               ) : (
-                <div>
-                  {book.notes ? (
-                    <>
-                      <div 
-                        id={`notes-${book._id}`}
-                        className={`muted small ${expandedNotes.has(book._id) ? 'notes-full' : 'notes-snippet'}`}>
-                        {book.notes}
-                      </div>
-                      {book.notes.length > 140 && (
-                        <button
-                          type="button"
-                          className="icon-button"
-                          onClick={() => toggleNotes(book._id)}
-                          aria-expanded={expandedNotes.has(book._id)}
-                          aria-controls={`notes-${book._id}`}
-                        >
-                          {expandedNotes.has(book._id) ? 'Show Less' : 'Show More'}
-                        </button>
-                      )}
-                    </>
-                  ) : (
-                    <div className="muted small text-italic">No notes</div>
-                  )}
-                  <button type="button" onClick={() => beginEditNotes(book)}>Notes</button>
-                </div>
+                <button
+                  className="danger"
+                  type="button"
+                  onClick={() => requestRemove(book._id)}
+                  aria-haspopup="true"
+                  aria-expanded={confirmingDeleteId === book._id}
+                >
+                  Remove
+                </button>
               )}
-            </div>
-
-            <StarRating
-              value={book.rating ?? 0}
-              onChange={(r) => handleRatingChange(book._id, r || null)}
-              label={`Rate ${book.title}`}
-            />
-
-            <select
-              aria-label="Change status"
-              value={book.status || 'to-read'}
-              onChange={(e) => handleStatusChange(book._id, e.target.value)}
-            >
-              <option value="to-read">To-Read</option>
-              <option value="reading">Reading</option>
-              <option value="done">Done</option>
-            </select>
-
-            {confirmingDeleteId === book._id ? (
-              <div className="inline-confirm" role="group" aria-label="Confirm removal" onKeyDown={(e) => onConfirmKeyDown(e, book._id)} onBlur={onConfirmBlur}>
-                <span className="muted small">Remove?</span>
-                <button className="danger" type="button" onClick={() => confirmRemove(book._id)} autoFocus>Yes</button>
-                <button type="button" onClick={cancelRemove}>No</button>
-              </div>
-            ) : (
-              <button
-                className="danger"
-                type="button"
-                onClick={() => requestRemove(book._id)}
-                aria-haspopup="true"
-                aria-expanded={confirmingDeleteId === book._id}
-              >
-                Remove
-              </button>
-            )}
-          </li>
-        ))}
+            </li>
+          );
+        })}
       </ul>
 
       <div className="card pagination">

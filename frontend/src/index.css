@@ -364,6 +364,33 @@ textarea::placeholder {
   width: min(720px, 100%);
 }
 
+.book-item.book-item--list.card {
+  padding: 0.9rem 1.1rem;
+}
+
+.book-item--list {
+  column-gap: calc(var(--gap) + 0.25rem);
+  grid-template-columns: 48px 1fr minmax(240px, 2fr) auto auto auto;
+}
+
+.book-list {
+  gap: calc(var(--gap) + 0.25rem);
+}
+
+.book-item--list> :last-child {
+  justify-self: end;
+}
+
+@media (max-width: 620px) {
+  .book-item.book-item--list.card {
+    padding: 1rem 1.2rem;
+  }
+
+  .book-item--list {
+    column-gap: calc(var(--gap) + 0.35rem);
+  }
+}
+
 /* --- Skeleton Loader --- */
 .skel-list {
   display: grid;
