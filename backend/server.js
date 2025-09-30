@@ -23,7 +23,7 @@ app.use(helmet.contentSecurityPolicy({
     "default-src": ["'self'"],
     "base-uri": ["'self'"],
     "object-src": ["'none'"],
-    "img-src": ["'self'", "data:", "https://covers.openlibrary.org", "https://*.archive.org"],
+    "img-src": ["'self'", "data:", "https://covers.openlibrary.org", "https://*.archive.org", "https://archive.org"],
     "style-src": ["'self'", "https:", "'unsafe-inline'"],
     "font-src": ["'self'", "https:", "data:"],
     "script-src": ["'self'"],
