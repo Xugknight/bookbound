@@ -3,10 +3,11 @@ const express = require('express');
 const logger = require('morgan');
 const helmet = require('helmet');
 const cors = require('cors');
-const app = express();
 
 require('dotenv').config();
 require('./db');
+
+const app = express();
 
 const csp = helmet.contentSecurityPolicy({
   useDefaults: true,
@@ -36,9 +37,34 @@ app.use(helmet({
 
 if (process.env.NODE_ENV !== 'production') {
   app.use(cors());
-};
+}
 
-app.use(express.static(path.join(__dirname, '../frontend/dist')));
+const distDir = path.join(__dirname, '../frontend/dist');
+
+app.use('/assets', express.static(path.join(distDir, 'assets'), {
+  maxAge: '1y',
+  etag: true,
+  setHeaders: (res) => {
+    res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
+  },
+}));
+
+app.use('/images', express.static(path.join(distDir, 'images'), {
+  maxAge: '30d',
+  etag: true,
+  setHeaders: (res) => {
+    res.setHeader('Cache-Control', 'public, max-age=2592000');
+  },
+}));
+
+app.use(express.static(distDir, {
+  etag: true,
+  setHeaders: (res, filePath) => {
+    if (filePath.endsWith('.html')) {
+      res.setHeader('Cache-Control', 'no-store');
+    }
+  }
+}));
 
 app.use((req, res, next) => {
   res.set(
@@ -56,7 +82,7 @@ app.use('/api/books', require('./routes/books'));
 app.use('/api/ol', require('./routes/openLibrary'));
 
 app.get('/*splat', (_req, res) => {
-  res.sendFile(path.join(__dirname, '../frontend/dist/index.html'));
+  res.sendFile(path.join(distDir, 'index.html'));
 });
 
 const port = process.env.PORT || 3000;
