@@ -6,7 +6,7 @@ export default function HomePage() {
 
   return (
     <section className="stack">
-      
+
       <div className="hero">
         <div className="hero__bg" role="img" aria-label="Cozy reading nook background" />
         <div className="hero__inner card">
@@ -22,8 +22,8 @@ export default function HomePage() {
               </>
             ) : (
               <>
-                <Link to="/search"><button type="button">Browse Books</button></Link>
                 <Link to="/list"><button className="primary" type="button">Go to My List</button></Link>
+                <Link to="/search"><button type="button">Browse Books</button></Link>
               </>
             )}
           </div>
