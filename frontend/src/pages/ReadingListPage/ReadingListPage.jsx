@@ -229,7 +229,7 @@ export default function ReadingListPage() {
         {books.map((book) => (
           <li key={book._id} className="card book-item book-item--list">
             <div className="cover cover--sm">
-              {book.coverId ? <img alt="" src={coverUrl(book.coverId, 'S')} /> : <span className="muted small">No Cover</span>}
+              {book.coverId ? <img alt="" src={coverUrl(book.coverId, 'S')} loading="lazy" width="128" height="192" /> : <span className="muted small">No Cover</span>}
             </div>
 
             <div>

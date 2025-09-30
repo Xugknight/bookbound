@@ -155,7 +155,7 @@ export default function SearchPage() {
               return (
                 <li key={book.workKey} className="book-item book-item--search">
                   <div className="cover cover--md">
-                    {src ? <img src={src} alt="" /> : <span className="muted small">No cover</span>}
+                    {src ? <img src={src} alt="" loading="lazy" width="128" height="192" /> : <span className="muted small">No cover</span>}
                   </div>
                   <div>
                     <div className="book-title">{book.title}</div>
