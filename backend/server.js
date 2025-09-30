@@ -9,7 +9,15 @@ require('./db');
 
 const app = express();
 
-const csp = helmet.contentSecurityPolicy({
+app.use(helmet({
+  contentSecurityPolicy: false,
+  referrerPolicy: { policy: "no-referrer" },
+  crossOriginResourcePolicy: { policy: "same-origin" },
+  crossOriginOpenerPolicy: { policy: "same-origin" },
+  crossOriginEmbedderPolicy: false,
+}));
+
+app.use(helmet.contentSecurityPolicy({
   useDefaults: true,
   directives: {
     "default-src": ["'self'"],
@@ -22,18 +30,11 @@ const csp = helmet.contentSecurityPolicy({
     "frame-ancestors": ["'self'"],
     "upgrade-insecure-requests": [],
   }
-});
+}));
 
 app.set('trust proxy', 1);
 app.use(logger('dev'));
 app.use(express.json());
-app.use(csp);
-app.use(helmet({
-  referrerPolicy: { policy: "no-referrer" },
-  crossOriginResourcePolicy: { policy: "same-origin" },
-  crossOriginOpenerPolicy: { policy: "same-origin" },
-  crossOriginEmbedderPolicy: false,
-}));
 
 if (process.env.NODE_ENV !== 'production') {
   app.use(cors());
@@ -75,7 +76,6 @@ app.use((req, res, next) => {
 });
 
 app.get('/api/health', (_req, res) => res.json({ ok: true }));
-
 app.use('/api/auth', require('./routes/auth'));
 app.use(require('./middleware/checkToken'));
 app.use('/api/books', require('./routes/books'));

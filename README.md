@@ -1,5 +1,4 @@
 # Bookbound 📚✨  
-[![Made with MERN](https://img.shields.io/badge/stack-MERN-green)](#)  
 
 _A cozy, modern reading tracker app inspired by a love of books and clean design._
 
@@ -21,18 +20,24 @@ _A cozy, modern reading tracker app inspired by a love of books and clean design
 ---
 
 ## 🖼️ Screenshots
-- **Landing Page** – welcoming hero image with CTA  
-- **Search** – live book lookup with Open Library covers  
-- **Reading List** – track progress with notes and ratings  
+- **Landing Page**
+![Landing Page](./frontend/public/images/bookboundlandingpage.png)
 
+- **Search** 
+![Search Page](./frontend/public/images/bookboundsearchpage.png)
+
+- **Reading List**
+![Reading List Page](./frontend/public/images/bookboundreadinglistpage.png)
 
 ---
 
 ## 🛠️ Technologies
+[![Made with MERN](https://img.shields.io/badge/stack-MERN-green)](#)  
 ### Frontend
 - React + Vite  
 - React Router  
 - CSS
+- HTML
 
 ### Backend
 - Node.js + Express  
@@ -55,7 +60,7 @@ _A cozy, modern reading tracker app inspired by a love of books and clean design
 ---
 ## Try It Here!
 
-[![Heroku](https://img.shields.io/badge/demo-heroku-purple?logo=heroku)](https://your-heroku-app-url-here)  
+[![Heroku](https://img.shields.io/badge/demo-heroku-purple?logo=heroku)](https://bookboundreading-5ed841923673.herokuapp.com/)  
 
 ---
 
@@ -79,7 +84,7 @@ _A cozy, modern reading tracker app inspired by a love of books and clean design
 
 4. **Run Locally**
     ```
-    npm run build     # build frontend
+    npm run build(npm run dev)     # build frontend
     npm start         # start Express backend
     ```
 
