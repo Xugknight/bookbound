@@ -6,6 +6,7 @@
   "scripts": {
     "start": "node ./backend/server.js",
     "build": "npm install && npm --prefix ./frontend install && npm --prefix ./frontend run build",
+    "heroku-postbuild": "npm --prefix ./frontend install && npm --prefix ./frontend run build",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
