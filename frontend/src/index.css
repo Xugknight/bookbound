@@ -624,7 +624,8 @@ textarea::placeholder {
     linear-gradient(180deg, #EDE2C6 0%, #D9C9A4 100%);
   background-image:
     linear-gradient(to bottom, rgba(26, 20, 16, 0) 0%, rgba(26, 20, 16, .25) 100%),
-    url("/images/hero-reading-nook.jpg");
+    image-set(url("/images/hero-reading-nook.webp") type("image/webp"),
+      url("/images/hero-reading-nook.jpg") type("image/jpeg"));
   background-size: cover;
   background-repeat: no-repeat;
   filter: saturate(.95) contrast(.98);
@@ -657,7 +658,8 @@ textarea::placeholder {
   border-radius: var(--radius);
   background:
     linear-gradient(180deg, rgba(26, 20, 16, .06), rgba(26, 20, 16, .02)),
-    url("/images/texture-parchment.jpg");
+    image-set(url("/images/texture-parchment.webp") type("image/webp"),
+      url("/images/texture-parchment.jpg") type("image/jpeg"));
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
