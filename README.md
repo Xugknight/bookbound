@@ -62,7 +62,7 @@ _A cozy, modern reading tracker app inspired by a love of books and clean design
 ---
 ## Try It Here!
 
-[![Heroku](https://img.shields.io/badge/demo-heroku-purple?logo=heroku)](https://bookboundreading-5ed841923673.herokuapp.com/)  
+[![Heroku](https://img.shields.io/badge/demo-heroku-purple?logo=heroku)](https://bookbound.knightworks.dev/)  
 
 ---
 
