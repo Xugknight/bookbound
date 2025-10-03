@@ -56,8 +56,6 @@ _A cozy, modern reading tracker app inspired by a love of books and clean design
 - 👥 Social features (share lists, follow friends)
 - 📊 Reading stats & progress tracker
 - 📅 Calendar / reading schedule integration
-- ❌ Error message when Openlibrary API down
-- 🪖 Add cloudflare to CSP to remove console error
 
 ---
 ## Try It Here!
