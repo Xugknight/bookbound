@@ -32,8 +32,6 @@ export async function searchOpenLibrary({ query, page = 1, limit = 10 }) {
         }
         throw new Error(err?.message || `Search Failed (${res.status})`);
     }
-    // Force test error
-    // throw new Error('Open Library API is having trouble completing this search right now. Please try again in a moment.');
     return res.json();
 }
 
