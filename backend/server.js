@@ -26,7 +26,8 @@ app.use(helmet.contentSecurityPolicy({
     "img-src": ["'self'", "data:", "https://covers.openlibrary.org", "https://*.archive.org", "https://archive.org"],
     "style-src": ["'self'", "https:", "'unsafe-inline'"],
     "font-src": ["'self'", "https:", "data:"],
-    "script-src": ["'self'"],
+    "script-src": ["'self'", "https://static.cloudflareinsights.com"],
+    "connect-src": ["'self'", "https://cloudflareinsights.com"],
     "frame-ancestors": ["'self'"],
     "upgrade-insecure-requests": [],
   }
